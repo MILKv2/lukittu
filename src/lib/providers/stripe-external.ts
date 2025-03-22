@@ -143,12 +143,21 @@ export const handleInvoicePaid = async (
       ];
 
       const license = await prisma.$transaction(async (prisma) => {
+        const existingLukittuCustomer = await prisma.customer.findFirst({
+          where: {
+            metadata: {
+              some: {
+                key: 'STRIPE_CS',
+                value: stripeCustomerId,
+              },
+            },
+            teamId: team.id,
+          },
+        });
         const lukittuCustomer = await prisma.customer.upsert({
           where: {
-            email_teamId: {
-              email: stripeCustomer.email!,
-              teamId: team.id,
-            },
+            id: existingLukittuCustomer?.id,
+            teamId: team.id,
           },
           create: {
             email: stripeCustomer.email!,
@@ -373,6 +382,7 @@ export const handleCheckoutSessionCompleted = async (
     }
 
     const customer = session.customer_details;
+    const stripeCustomerId = session.customer as string;
 
     if (!customer || !customer.email) {
       logger.info('Skipping: No customer email found in the checkout session.');
@@ -518,12 +528,21 @@ export const handleCheckoutSessionCompleted = async (
     ];
 
     const license = await prisma.$transaction(async (prisma) => {
+      const existingLukittuCustomer = await prisma.customer.findFirst({
+        where: {
+          metadata: {
+            some: {
+              key: 'STRIPE_CS',
+              value: stripeCustomerId,
+            },
+          },
+          teamId: team.id,
+        },
+      });
       const lukittuCustomer = await prisma.customer.upsert({
         where: {
-          email_teamId: {
-            email: customer.email!,
-            teamId: team.id,
-          },
+          id: existingLukittuCustomer?.id,
+          teamId: team.id,
         },
         create: {
           email: customer.email!,
