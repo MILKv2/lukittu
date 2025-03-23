@@ -1,7 +1,7 @@
 import { regex } from '@/lib/constants/regex';
 import prisma from '@/lib/database/prisma';
 import { logger } from '@/lib/logging/logger';
-import { handleBuiltByBitPurchase } from '@/lib/providers/build-by-bit-external';
+import { handleBuiltByBitPurchase } from '@/lib/providers/built-by-bit-external';
 import { isRateLimited } from '@/lib/security/rate-limiter';
 import {
   purchaseBuiltByBitSchema,

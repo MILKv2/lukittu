@@ -16,11 +16,11 @@ type ExtendedTeam = Team & {
 };
 
 export const handleBuiltByBitPurchase = async (
-  buildByBitData: PurchaseBuiltByBitSchema['builtByBitData'],
+  builtByBitData: PurchaseBuiltByBitSchema['builtByBitData'],
   lukittuData: PurchaseBuiltByBitSchema['lukittuData'],
   team: ExtendedTeam,
 ) => {
-  const { addon, resource, purchaser } = buildByBitData;
+  const { addon, resource, purchaser } = builtByBitData;
   const { productId, seats, expirationStart, expirationDays, ipLimit } =
     lukittuData;
 
@@ -169,7 +169,7 @@ export const handleBuiltByBitPurchase = async (
     return;
   }
 
-  logger.info('BuildByBit purchase processed successfully', {
+  logger.info('BuiltByBit purchase processed successfully', {
     licenseId: license.id,
     teamId: team.id,
     productId,
