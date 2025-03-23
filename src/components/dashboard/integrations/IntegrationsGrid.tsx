@@ -1,5 +1,5 @@
 'use client';
-import buildByBitSvg from '@/../public/integrations/buildbybit.svg';
+import builtByBitSvg from '@/../public/integrations/built-by-bit.svg';
 import stripeSvg from '@/../public/integrations/stripe.svg';
 import {
   ITeamsIntegrationsGetResponse,
@@ -23,7 +23,7 @@ import Link from 'next/link';
 import { useContext, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import useSWR from 'swr';
-import SetBuildByBitIntegrationModal from './modals/SetBuildByBitIntegrationModal';
+import SetBuiltByBitIntegrationModal from './modals/SetBuiltByBitIntegrationModal';
 import SetStripeIntegrationModal from './modals/SetStripeIntegrationModal';
 
 interface InitialIntegration {
@@ -42,11 +42,11 @@ const initialIntegrations: InitialIntegration[] = [
     key: 'stripeIntegration',
   },
   {
-    name: 'BuildByBit',
+    name: 'BuiltByBit',
     description:
       'The largest independent marketplace for buying and selling gaming-related goods and services.',
-    logo: buildByBitSvg,
-    key: 'buildByBitIntegration',
+    logo: builtByBitSvg,
+    key: 'builtByBitIntegration',
   },
 ];
 
@@ -98,9 +98,9 @@ export default function IntegrationsGrid() {
         stripeIntegration={integrations?.stripeIntegration ?? null}
         onOpenChange={handleIntegrationModalClose}
       />
-      <SetBuildByBitIntegrationModal
-        buildByBitIntegration={integrations?.buildByBitIntegration ?? null}
-        open={openSetupModal === 'buildByBitIntegration'}
+      <SetBuiltByBitIntegrationModal
+        builtByBitIntegration={integrations?.builtByBitIntegration ?? null}
+        open={openSetupModal === 'builtByBitIntegration'}
         onOpenChange={handleIntegrationModalClose}
       />
       <div className="grid grid-cols-3 gap-6 max-xl:grid-cols-2 max-md:grid-cols-1">

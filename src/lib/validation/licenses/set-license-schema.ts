@@ -1,7 +1,7 @@
 import { regex } from '@/lib/constants/regex';
+import { I18nTranslator } from '@/types/i18n-types';
 import { z } from 'zod';
 import { metadataSchema } from '../shared/metadata-schema';
-import { I18nTranslator } from '@/types/i18n-types';
 
 export type SetLicenseScheama = z.infer<ReturnType<typeof setLicenseSchema>>;
 export type CreateLicenseSchema = z.infer<

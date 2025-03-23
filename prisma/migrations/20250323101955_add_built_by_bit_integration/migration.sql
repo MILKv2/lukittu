@@ -20,7 +20,7 @@ ADD CONSTRAINT "customer_email_or_username_check" CHECK (
 );
 
 -- CreateTable
-CREATE TABLE "BuildByBitIntegration" (
+CREATE TABLE "BuiltByBitIntegration" (
     "id" TEXT NOT NULL,
     "teamId" TEXT NOT NULL,
     "apiSecret" TEXT NOT NULL,
@@ -29,14 +29,14 @@ CREATE TABLE "BuildByBitIntegration" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "BuildByBitIntegration_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "BuiltByBitIntegration_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "BuildByBitIntegration_teamId_key" ON "BuildByBitIntegration"("teamId");
+CREATE UNIQUE INDEX "BuiltByBitIntegration_teamId_key" ON "BuiltByBitIntegration"("teamId");
 
 -- AddForeignKey
-ALTER TABLE "BuildByBitIntegration" ADD CONSTRAINT "BuildByBitIntegration_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES "Team"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "BuiltByBitIntegration" ADD CONSTRAINT "BuiltByBitIntegration_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES "Team"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "BuildByBitIntegration" ADD CONSTRAINT "BuildByBitIntegration_createdByUserId_fkey" FOREIGN KEY ("createdByUserId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "BuiltByBitIntegration" ADD CONSTRAINT "BuiltByBitIntegration_createdByUserId_fkey" FOREIGN KEY ("createdByUserId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;

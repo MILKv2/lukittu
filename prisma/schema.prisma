@@ -33,7 +33,7 @@ model User {
   createdLicenses               License[]
   createdCustomers              Customer[]
   createdStripeIntegrations     StripeIntegration[]
-  createdBuildByBitIntegrations BuildByBitIntegration[]
+  createdBuiltByBitIntegrations BuiltByBitIntegration[]
   createdInvitations            Invitation[]
   blacklist                     Blacklist[]
   releases                      Release[]
@@ -83,7 +83,7 @@ model Team {
   watermarkingSettings  WatermarkingSettings?
   limits                Limits?
   stripeIntegration     StripeIntegration?
-  buildByBitIntegration BuildByBitIntegration?
+  builtByBitIntegration BuiltByBitIntegration?
   settings              Settings?
   keyPair               KeyPair?
   deletedAt             DateTime?
@@ -121,7 +121,7 @@ model StripeIntegration {
   updatedAt       DateTime @updatedAt
 }
 
-model BuildByBitIntegration {
+model BuiltByBitIntegration {
   id              String   @id @default(uuid())
   teamId          String   @unique
   team            Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)

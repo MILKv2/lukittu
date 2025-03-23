@@ -30,9 +30,9 @@ import {
 } from '@/components/ui/responsive-dialog';
 import { Switch } from '@/components/ui/switch';
 import {
-  SetBuildByBitIntegrationSchema,
-  setBuildByBitIntegrationSchema,
-} from '@/lib/validation/integrations/set-buildbybit-integration-schema';
+  SetBuiltByBitIntegrationSchema,
+  setBuiltByBitIntegrationSchema,
+} from '@/lib/validation/integrations/set-built-by-bit-integration-schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CopyIcon, EyeIcon, EyeOffIcon, RefreshCw } from 'lucide-react';
 import { useTranslations } from 'next-intl';
@@ -40,17 +40,17 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
-interface SetBuildByBitIntegrationModalProps {
-  buildByBitIntegration: ITeamsIntegrationsGetSuccessResponse['integrations']['buildByBitIntegration'];
+interface SetBuiltByBitIntegrationModalProps {
+  builtByBitIntegration: ITeamsIntegrationsGetSuccessResponse['integrations']['builtByBitIntegration'];
   open: boolean;
   onOpenChange: (boolean: boolean) => void;
 }
 
-export default function SetBuildByBitIntegrationModal({
-  buildByBitIntegration,
+export default function SetBuiltByBitIntegrationModal({
+  builtByBitIntegration,
   onOpenChange,
   open,
-}: SetBuildByBitIntegrationModalProps) {
+}: SetBuiltByBitIntegrationModalProps) {
   const t = useTranslations();
 
   const [submitting, setSubmitting] = useState(false);
@@ -59,15 +59,15 @@ export default function SetBuildByBitIntegrationModal({
   const [generatedApiSecret, setGeneratedApiSecret] = useState('');
   const [showConfirmReroll, setShowConfirmReroll] = useState(false);
 
-  const form = useForm<SetBuildByBitIntegrationSchema>({
-    resolver: zodResolver(setBuildByBitIntegrationSchema(t)),
+  const form = useForm<SetBuiltByBitIntegrationSchema>({
+    resolver: zodResolver(setBuiltByBitIntegrationSchema(t)),
     defaultValues: {
       active: true,
       apiSecret: '',
     },
   });
 
-  const generateBuildByBitApiSecret = () => {
+  const generateBuiltByBitApiSecret = () => {
     const characters =
       'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = 'bbb_';
@@ -83,19 +83,19 @@ export default function SetBuildByBitIntegrationModal({
 
   useEffect(() => {
     // Generate a new API secret when the modal is opened and there's no existing integration
-    if (open && !buildByBitIntegration) {
-      const newSecret = generateBuildByBitApiSecret();
+    if (open && !builtByBitIntegration) {
+      const newSecret = generateBuiltByBitApiSecret();
       setGeneratedApiSecret(newSecret);
       setValue('apiSecret', newSecret);
-    } else if (buildByBitIntegration) {
-      setValue('active', buildByBitIntegration.active);
-      setValue('apiSecret', buildByBitIntegration.apiSecret);
-      setGeneratedApiSecret(buildByBitIntegration.apiSecret);
+    } else if (builtByBitIntegration) {
+      setValue('active', builtByBitIntegration.active);
+      setValue('apiSecret', builtByBitIntegration.apiSecret);
+      setGeneratedApiSecret(builtByBitIntegration.apiSecret);
     }
-  }, [buildByBitIntegration, open, setValue]);
+  }, [builtByBitIntegration, open, setValue]);
 
   const handleRerollApiSecret = () => {
-    const newSecret = generateBuildByBitApiSecret();
+    const newSecret = generateBuiltByBitApiSecret();
     setGeneratedApiSecret(newSecret);
     setValue('apiSecret', newSecret);
     setShowConfirmReroll(false);
@@ -113,10 +113,10 @@ export default function SetBuildByBitIntegrationModal({
     }
   };
 
-  const handleBuildByBitIntegrationSet = async (
-    payload: SetBuildByBitIntegrationSchema,
+  const handleBuiltByBitIntegrationSet = async (
+    payload: SetBuiltByBitIntegrationSchema,
   ) => {
-    const response = await fetch('/api/teams/integrations/buildbybit', {
+    const response = await fetch('/api/teams/integrations/built-by-bit', {
       method: 'POST',
       body: JSON.stringify(payload),
     });
@@ -126,8 +126,8 @@ export default function SetBuildByBitIntegrationModal({
     return data;
   };
 
-  const handleBuildByBitIntegrationDelete = async () => {
-    const response = await fetch('/api/teams/integrations/buildbybit', {
+  const handleBuiltByBitIntegrationDelete = async () => {
+    const response = await fetch('/api/teams/integrations/built-by-bit', {
       method: 'DELETE',
     });
 
@@ -139,13 +139,15 @@ export default function SetBuildByBitIntegrationModal({
   const handleDelete = async () => {
     setDeleting(true);
     try {
-      const res = await handleBuildByBitIntegrationDelete();
+      const res = await handleBuiltByBitIntegrationDelete();
       if ('message' in res) {
         toast.error(res.message);
         return;
       }
 
-      toast.success(t('dashboard.integrations.buildbybit_integration_deleted'));
+      toast.success(
+        t('dashboard.integrations.built_by_bit_integration_deleted'),
+      );
       handleOpenChange(false);
     } catch (error: any) {
       toast.error(error.message ?? t('general.error_occurred'));
@@ -154,19 +156,19 @@ export default function SetBuildByBitIntegrationModal({
     }
   };
 
-  const onSubmit = async (payload: SetBuildByBitIntegrationSchema) => {
+  const onSubmit = async (payload: SetBuiltByBitIntegrationSchema) => {
     setSubmitting(true);
     try {
-      const res = await handleBuildByBitIntegrationSet(payload);
+      const res = await handleBuiltByBitIntegrationSet(payload);
       if ('message' in res) {
         toast.error(res.message);
         return;
       }
 
       toast.success(
-        Boolean(buildByBitIntegration)
-          ? t('dashboard.integrations.buildbybit_integration_updated')
-          : t('dashboard.integrations.buildbybit_integration_created'),
+        Boolean(builtByBitIntegration)
+          ? t('dashboard.integrations.built_by_bit_integration_updated')
+          : t('dashboard.integrations.built_by_bit_integration_created'),
       );
       handleOpenChange(false);
     } catch (error: any) {
@@ -210,12 +212,12 @@ export default function SetBuildByBitIntegrationModal({
         <ResponsiveDialogContent className="sm:max-w-[625px]">
           <ResponsiveDialogHeader>
             <ResponsiveDialogTitle>
-              {Boolean(buildByBitIntegration)
+              {Boolean(builtByBitIntegration)
                 ? t('dashboard.integrations.manage_integration')
                 : t('dashboard.integrations.setup_integration')}
             </ResponsiveDialogTitle>
             <ResponsiveDialogDescription>
-              {t('dashboard.integrations.buildbybit_integration_description')}
+              {t('dashboard.integrations.built_by_bit_integration_description')}
             </ResponsiveDialogDescription>
           </ResponsiveDialogHeader>
           <Form {...form}>
@@ -298,7 +300,7 @@ export default function SetBuildByBitIntegrationModal({
                     <FormControl>
                       <Switch
                         checked={field.value}
-                        disabled={!buildByBitIntegration}
+                        disabled={!builtByBitIntegration}
                         onCheckedChange={field.onChange}
                       />
                     </FormControl>
@@ -319,7 +321,7 @@ export default function SetBuildByBitIntegrationModal({
                 {t('general.close')}
               </LoadingButton>
             </div>
-            {Boolean(buildByBitIntegration) && (
+            {Boolean(builtByBitIntegration) && (
               <div>
                 <LoadingButton
                   className="w-full"
@@ -339,7 +341,7 @@ export default function SetBuildByBitIntegrationModal({
                 type="submit"
                 onClick={() => handleSubmit(onSubmit)()}
               >
-                {Boolean(buildByBitIntegration)
+                {Boolean(builtByBitIntegration)
                   ? t('general.save')
                   : t('general.create')}
               </LoadingButton>

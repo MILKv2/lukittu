@@ -4,32 +4,32 @@ import { logger } from '@/lib/logging/logger';
 import { getSession } from '@/lib/security/session';
 import { getLanguage, getSelectedTeam } from '@/lib/utils/header-helpers';
 import {
-  SetBuildByBitIntegrationSchema,
-  setBuildByBitIntegrationSchema,
-} from '@/lib/validation/integrations/set-buildbybit-integration-schema';
+  SetBuiltByBitIntegrationSchema,
+  setBuiltByBitIntegrationSchema,
+} from '@/lib/validation/integrations/set-built-by-bit-integration-schema';
 import { ErrorResponse } from '@/types/common-api-types';
 import { HttpStatus } from '@/types/http-status';
 import { AuditLogAction, AuditLogTargetType } from '@prisma/client';
 import { getTranslations } from 'next-intl/server';
 import { NextRequest, NextResponse } from 'next/server';
 
-export interface ITeamsIntegrationsBuildByBitSetSuccessResponse {
+export interface ITeamsIntegrationsBuiltByBitSetSuccessResponse {
   success: boolean;
 }
 
-export type ITeamsIntegrationsBuildByBitSetResponse =
+export type ITeamsIntegrationsBuiltByBitSetResponse =
   | ErrorResponse
-  | ITeamsIntegrationsBuildByBitSetSuccessResponse;
+  | ITeamsIntegrationsBuiltByBitSetSuccessResponse;
 
 export async function POST(
   request: NextRequest,
-): Promise<NextResponse<ITeamsIntegrationsBuildByBitSetResponse>> {
+): Promise<NextResponse<ITeamsIntegrationsBuiltByBitSetResponse>> {
   const t = await getTranslations({ locale: await getLanguage() });
 
   try {
-    const body = (await request.json()) as SetBuildByBitIntegrationSchema;
+    const body = (await request.json()) as SetBuiltByBitIntegrationSchema;
     const validated =
-      await setBuildByBitIntegrationSchema(t).safeParseAsync(body);
+      await setBuiltByBitIntegrationSchema(t).safeParseAsync(body);
 
     if (!validated.success) {
       return NextResponse.json(
@@ -88,7 +88,7 @@ export async function POST(
 
     const team = session.user.teams[0];
 
-    await prisma.buildByBitIntegration.upsert({
+    await prisma.builtByBitIntegration.upsert({
       where: {
         teamId: team.id,
       },
@@ -129,7 +129,7 @@ export async function POST(
     return NextResponse.json(response);
   } catch (error) {
     logger.error(
-      "Error occurred in 'teams/integrations/buildbybit' route",
+      "Error occurred in 'teams/integrations/built-by-bit' route",
       error,
     );
     return NextResponse.json(
@@ -141,16 +141,16 @@ export async function POST(
   }
 }
 
-export interface ITeamsIntegrationsBuildByBitDeleteSuccessResponse {
+export interface ITeamsIntegrationsBuiltByBitDeleteSuccessResponse {
   success: boolean;
 }
 
-export type ITeamsIntegrationsBuildByBitDeleteResponse =
+export type ITeamsIntegrationsBuiltByBitDeleteResponse =
   | ErrorResponse
-  | ITeamsIntegrationsBuildByBitDeleteSuccessResponse;
+  | ITeamsIntegrationsBuiltByBitDeleteSuccessResponse;
 
 export async function DELETE(): Promise<
-  NextResponse<ITeamsIntegrationsBuildByBitDeleteResponse>
+  NextResponse<ITeamsIntegrationsBuiltByBitDeleteResponse>
 > {
   const t = await getTranslations({ locale: await getLanguage() });
 
@@ -175,7 +175,7 @@ export async function DELETE(): Promise<
               deletedAt: null,
             },
             include: {
-              buildByBitIntegration: true,
+              builtByBitIntegration: true,
             },
           },
         },
@@ -203,16 +203,16 @@ export async function DELETE(): Promise<
 
     const team = session.user.teams[0];
 
-    if (!team.buildByBitIntegration) {
+    if (!team.builtByBitIntegration) {
       return NextResponse.json(
         {
-          message: t('validation.buildbybit_integration_not_found'),
+          message: t('validation.built_by_bit_integration_not_found'),
         },
         { status: HttpStatus.NOT_FOUND },
       );
     }
 
-    await prisma.buildByBitIntegration.delete({
+    await prisma.builtByBitIntegration.delete({
       where: {
         teamId: team.id,
       },
@@ -235,7 +235,7 @@ export async function DELETE(): Promise<
     return NextResponse.json(response);
   } catch (error) {
     logger.error(
-      "Error occurred in 'teams/integrations/buildbybit' route",
+      "Error occurred in 'teams/integrations/built-by-bit' route",
       error,
     );
     return NextResponse.json(
