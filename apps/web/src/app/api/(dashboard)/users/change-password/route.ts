@@ -1,4 +1,4 @@
-import prisma from '@/lib/database/prisma';
+import { prisma } from '@lukittu/prisma';
 import { logger } from '@/lib/logging/logger';
 import { hashPassword, verifyPassword } from '@/lib/security/crypto';
 import { getSession } from '@/lib/security/session';

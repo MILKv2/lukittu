@@ -2,7 +2,7 @@ import { Limits, Settings, StripeIntegration, Team } from '@lukittu/prisma';
 import 'server-only';
 import Stripe from 'stripe';
 import { regex } from '../constants/regex';
-import prisma from '../database/prisma';
+import { prisma } from '@lukittu/prisma';
 import { sendLicenseDistributionEmail } from '../emails/templates/send-license-distribution-email';
 import { generateUniqueLicense } from '../licenses/generate-license';
 import { logger } from '../logging/logger';

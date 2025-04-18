@@ -1,5 +1,5 @@
 import { regex } from '@/lib/constants/regex';
-import prisma from '@/lib/database/prisma';
+import { prisma } from '@lukittu/prisma';
 import { logger } from '@/lib/logging/logger';
 import { getSession } from '@/lib/security/session';
 import { iso3toIso2, iso3ToName } from '@/lib/utils/country-helpers';

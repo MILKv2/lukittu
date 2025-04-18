@@ -1,4 +1,4 @@
-import prisma from '@/lib/database/prisma';
+import { prisma } from '@lukittu/prisma';
 import { sendVerifyEmailEmail } from '@/lib/emails/templates/send-verify-email-email';
 import { logger } from '@/lib/logging/logger';
 import { verifyTurnstileToken } from '@/lib/providers/cloudflare';

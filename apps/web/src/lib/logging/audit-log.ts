@@ -1,6 +1,6 @@
 import { AuditLogAction, AuditLogTargetType } from '@lukittu/prisma';
 import 'server-only';
-import prisma from '../database/prisma';
+import { prisma } from '@lukittu/prisma';
 import { getCloudflareVisitorData } from '../providers/cloudflare';
 import { iso2toIso3 } from '../utils/country-helpers';
 import { getIp, getUserAgent } from '../utils/header-helpers';

@@ -1,5 +1,5 @@
 import 'server-only';
-import prisma from '../database/prisma';
+import { prisma } from '@lukittu/prisma';
 import { generateHMAC } from '../security/crypto';
 
 const generateRandomString = (length: number): string => {

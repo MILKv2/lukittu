@@ -1,5 +1,5 @@
 import { DEFAULT_LIMITS } from '@/lib/constants/limits';
-import prisma from '@/lib/database/prisma';
+import { prisma } from '@lukittu/prisma';
 import { logger } from '@/lib/logging/logger';
 import { sendDiscordWebhook } from '@/lib/providers/discord-webhook';
 import { HttpStatus } from '@/types/http-status';

@@ -3,7 +3,7 @@ import crypto from 'crypto';
 import { headers } from 'next/headers';
 import 'server-only';
 import { regex } from '../constants/regex';
-import prisma from '../database/prisma';
+import { prisma } from '@lukittu/prisma';
 import { logger } from '../logging/logger';
 
 type TeamWithLimits = Team & { limits: Limits };

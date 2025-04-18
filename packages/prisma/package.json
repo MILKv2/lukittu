@@ -1,7 +1,7 @@
 {
   "name": "@lukittu/prisma",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
     "generate": "prisma generate",
     "migrate": "prisma migrate dev",

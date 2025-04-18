@@ -4,7 +4,7 @@ import { getLanguage } from '@/lib/utils/header-helpers';
 import { HttpStatus } from '@/types/http-status';
 import { getTranslations } from 'next-intl/server';
 import { NextRequest, NextResponse } from 'next/server';
-import prisma from '@/lib/database/prisma';
+import { prisma } from '@lukittu/prisma';
 import { ErrorResponse } from '@/types/common-api-types';
 import { cookies } from 'next/headers';
 

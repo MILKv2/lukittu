@@ -2,7 +2,7 @@ import { HttpStatus } from '@/types/http-status';
 import { IpLimitPeriod, ReleaseStatus, RequestStatus } from '@lukittu/prisma';
 import 'server-only';
 import { regex } from '../constants/regex';
-import prisma from '../database/prisma';
+import { prisma } from '@lukittu/prisma';
 import { logger } from '../logging/logger';
 import { getFileFromPrivateS3 } from '../providers/aws-s3';
 import { CloudflareVisitorData } from '../providers/cloudflare';

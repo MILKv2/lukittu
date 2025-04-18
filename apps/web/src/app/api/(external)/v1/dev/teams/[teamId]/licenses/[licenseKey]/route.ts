@@ -1,5 +1,5 @@
 import { regex } from '@/lib/constants/regex';
-import prisma from '@/lib/database/prisma';
+import { prisma } from '@lukittu/prisma';
 import { logger } from '@/lib/logging/logger';
 import { verifyApiAuthorization } from '@/lib/security/api-key-auth';
 import { generateHMAC } from '@/lib/security/crypto';

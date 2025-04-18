@@ -1,4 +1,4 @@
-import prisma from '@/lib/database/prisma';
+import { prisma } from '@lukittu/prisma';
 import { logger } from '@/lib/logging/logger';
 import { decryptLicenseKey, generateHMAC } from '@/lib/security/crypto';
 import { isRateLimited } from '@/lib/security/rate-limiter';

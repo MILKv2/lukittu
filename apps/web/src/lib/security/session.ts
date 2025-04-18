@@ -1,4 +1,4 @@
-import prisma from '@/lib/database/prisma';
+import { prisma } from '@lukittu/prisma';
 import { Prisma } from '@lukittu/prisma';
 import { randomBytes } from 'crypto';
 import { cookies } from 'next/headers';

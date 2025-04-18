@@ -1,4 +1,4 @@
-import prisma from '@/lib/database/prisma';
+import { prisma } from '@lukittu/prisma';
 import { BlacklistType, License, RequestStatus } from '@lukittu/prisma';
 import { iso2toIso3 } from '../../utils/country-helpers';
 

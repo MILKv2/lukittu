@@ -1,4 +1,4 @@
-import prisma from '@/lib/database/prisma';
+import { prisma } from '@lukittu/prisma';
 import { sendResetPasswordEmail } from '@/lib/emails/templates/send-forgot-password-email';
 import { logger } from '@/lib/logging/logger';
 import { isRateLimited } from '@/lib/security/rate-limiter';

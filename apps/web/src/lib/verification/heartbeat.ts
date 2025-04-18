@@ -2,7 +2,7 @@ import { HttpStatus } from '@/types/http-status';
 import { IpLimitPeriod, RequestStatus } from '@lukittu/prisma';
 import 'server-only';
 import { regex } from '../constants/regex';
-import prisma from '../database/prisma';
+import { prisma } from '@lukittu/prisma';
 import { CloudflareVisitorData } from '../providers/cloudflare';
 import { generateHMAC, signChallenge } from '../security/crypto';
 import { isRateLimited } from '../security/rate-limiter';

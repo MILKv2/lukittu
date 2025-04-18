@@ -1,5 +1,5 @@
 import { regex } from '@/lib/constants/regex';
-import prisma from '@/lib/database/prisma';
+import { prisma } from '@lukittu/prisma';
 import { sendLicenseDistributionEmail } from '@/lib/emails/templates/send-license-distribution-email';
 import { generateUniqueLicense } from '@/lib/licenses/generate-license';
 import { createAuditLog } from '@/lib/logging/audit-log';
