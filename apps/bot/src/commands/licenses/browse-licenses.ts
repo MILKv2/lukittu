@@ -75,11 +75,12 @@ function createTimestamps(license: ExtendedLicense) {
   };
 }
 
-function createPaginationRow(
+function createActionRows(
   currentPage: number,
   totalPages: number,
-): ActionRowBuilder<ButtonBuilder> {
-  return new ActionRowBuilder<ButtonBuilder>().addComponents(
+  licenseId: string,
+): ActionRowBuilder<ButtonBuilder>[] {
+  const paginationRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
     new ButtonBuilder()
       .setCustomId('first')
       .setEmoji('1029435230668476476')
@@ -101,6 +102,15 @@ function createPaginationRow(
       .setStyle(ButtonStyle.Secondary)
       .setDisabled(currentPage === totalPages),
   );
+
+  const dashboardRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
+    new ButtonBuilder()
+      .setLabel('View in Dashboard')
+      .setURL(`${process.env.BASE_URL}/dashboard/licenses/${licenseId}`)
+      .setStyle(ButtonStyle.Link),
+  );
+
+  return [paginationRow, dashboardRow];
 }
 
 function createLicenseEmbed(
@@ -582,13 +592,16 @@ export default Command({
         userImageUrl,
       );
 
-      // Create pagination controls
-      const paginationRow = createPaginationRow(validPage, totalPages);
+      const actionRows = createActionRows(
+        validPage,
+        totalPages,
+        currentLicense.id,
+      );
 
-      // Send initial response with pagination buttons
+      // Send initial response with buttons
       const response = await interaction.editReply({
         embeds: [embed],
-        components: [paginationRow],
+        components: actionRows,
       });
 
       // Create button collector for pagination
@@ -678,13 +691,16 @@ export default Command({
             userImageUrl,
           );
 
-          // Create pagination controls for the new page
-          const newPaginationRow = createPaginationRow(currentPage, totalPages);
+          const newActionRows = createActionRows(
+            currentPage,
+            totalPages,
+            newLicense.id,
+          );
 
           // Update the message with the new page
           await i.editReply({
             embeds: [newEmbed],
-            components: [newPaginationRow],
+            components: newActionRows,
           });
         } catch (error) {
           logger.error('Error handling pagination:', error);
@@ -699,10 +715,21 @@ export default Command({
 
       collector.on('end', async () => {
         try {
-          // Remove buttons when collector expires
+          // Keep the dashboard button but remove the pagination buttons
+          const finalActionRow =
+            new ActionRowBuilder<ButtonBuilder>().addComponents(
+              new ButtonBuilder()
+                .setLabel('View in Dashboard')
+                .setURL(
+                  `${process.env.BASE_URL}/dashboard/licenses/${currentLicense.id}`,
+                )
+                .setStyle(ButtonStyle.Link),
+            );
+
+          // Remove buttons when collector expires but keep the dashboard link
           await interaction.editReply({
             embeds: [embed],
-            components: [],
+            components: [finalActionRow],
           });
         } catch (error) {
           logger.error('Error removing buttons:', error);
