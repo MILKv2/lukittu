@@ -87,10 +87,6 @@ export default Command({
                   id: teamId,
                   deletedAt: null,
                 },
-                select: {
-                  id: true,
-                  name: true,
-                },
               },
             },
           },

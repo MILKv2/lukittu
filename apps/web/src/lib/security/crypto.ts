@@ -97,6 +97,7 @@ export function decryptLicenseKey(encryptedString: string): string {
     throw new Error('Decryption failed');
   }
 }
+
 export function generateHMAC(licenseKey: string): string {
   try {
     return crypto
