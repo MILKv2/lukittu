@@ -235,7 +235,9 @@ function createLicenseEmbed(
       embed.addFields({
         name: product.name,
         value: `${'```yaml\n' + product.id + '```'}\n${
-          product.url ? `[${product.url}](${product.url})` : 'No URL provided'
+          product.url
+            ? `**Url:** [${product.url}](${product.url})`
+            : 'No URL provided'
         }`,
         inline: false,
       });
@@ -265,7 +267,7 @@ function createLicenseEmbed(
     displayCustomers.forEach((customer) => {
       embed.addFields({
         name: customer.fullName || 'Unnamed Customer',
-        value: `${'```yaml\n' + customer.id + '```'}\n${customer.email || 'N/A'}`,
+        value: `${'```yaml\n' + customer.id + '```'}\n${customer.email ? `**Email:** ${customer.email}` : 'No email provided'}`,
         inline: false,
       });
     });
