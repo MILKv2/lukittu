@@ -5,6 +5,7 @@ import {
   Collection,
   Routes,
   MessageFlags,
+  ActivityType,
 } from 'discord.js';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -159,9 +160,34 @@ client.on(Events.InteractionCreate, async (interaction) => {
   }
 });
 
+async function updateBotStatus() {
+  try {
+    const licenseCount = await prisma.license.count();
+
+    client.user?.setActivity({
+      name: `${licenseCount} licenses`,
+      type: ActivityType.Watching,
+    });
+
+    logger.info(`Updated status: Watching ${licenseCount} licenses`);
+  } catch (error) {
+    logger.error('Failed to update bot status:', error);
+  }
+}
+
 client.once(Events.ClientReady, () => {
   logger.info('Ready!');
   registerCommands().catch(logger.error);
+
+  updateBotStatus();
+
+  // Update status every 30 minutes (1800000 ms)
+  setInterval(
+    () => {
+      updateBotStatus();
+    },
+    30 * 60 * 1000,
+  );
 });
 
 // Load commands and login
