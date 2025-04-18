@@ -14,7 +14,7 @@ COPY pnpm-workspace.yaml ./
 COPY package.json ./
 
 # Copy all package.json files from workspace packages
-COPY apps/next/package.json ./apps/next/
+COPY apps/web/package.json ./apps/web/
 COPY packages/prisma/package.json ./packages/prisma/
 
 # Install dependencies based on the preferred package manager
@@ -28,7 +28,7 @@ WORKDIR /app
 # Copy all workspace files
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/packages/prisma/node_modules ./packages/prisma/node_modules
-COPY --from=deps /app/apps/next/node_modules ./apps/next/node_modules
+COPY --from=deps /app/apps/web/node_modules ./apps/web/node_modules
 COPY --from=deps /app/pnpm-workspace.yaml ./
 COPY --from=deps /app/package.json ./
 
@@ -37,7 +37,7 @@ COPY packages ./packages
 COPY apps ./apps
 
 # Set working directory to the Next.js app
-WORKDIR /app/apps/next
+WORKDIR /app/apps/web
 
 # Generate Prisma client
 RUN cd ../../packages/prisma && pnpm run generate
@@ -54,12 +54,12 @@ ENV NODE_ENV=production
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder /app/apps/next/public ./apps/next/public
+COPY --from=builder /app/apps/web/public ./apps/web/public
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder --chown=nextjs:nodejs /app/apps/next/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/apps/next/.next/static ./apps/next/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
 
 USER nextjs
 
@@ -71,4 +71,4 @@ ENV HOSTNAME="0.0.0.0"
 
 # server.js is created by next build from the standalone output
 # https://nextjs.org/docs/pages/api-reference/next-config-js/output
-CMD ["node", "apps/next/server.js"]
+CMD ["node", "apps/web/server.js"]

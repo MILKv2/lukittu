@@ -1,5 +1,5 @@
 {
-  "name": "lukittu-next",
+  "name": "lukittu-web",
   "version": "0.1.0",
   "scripts": {
     "preinstall": "npx only-allow pnpm",

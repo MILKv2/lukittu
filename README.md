@@ -39,7 +39,8 @@ For detailed pricing and feature comparisons, visit [our website](https://lukitt
 
 Lukittu uses a pnpm workspace monorepo structure with the following packages:
 
-- `apps/next`: The Next.js frontend application
+- `apps/web`: The core Next.js application
+- `apps/bot`: Lukittu's Discord bot
 - `packages/prisma`: Shared Prisma schema and client
 
 To get started with the project locally, follow the steps below:
@@ -97,7 +98,7 @@ To run commands for a specific workspace, use the `--filter` flag:
 
 ```bash
 # Run Next.js development server only
-pnpm --filter lukittu-next dev
+pnpm --filter lukittu-web dev
 
 # Generate Prisma client
 pnpm --filter @lukittu/prisma generate

@@ -11,7 +11,7 @@
     "format": "prettier --write .",
     "db:migrate": "pnpm --filter @lukittu/prisma migrate",
     "db:deploy": "pnpm --filter @lukittu/prisma docker-deploy",
-    "build:next": "pnpm --filter lukittu-next build"
+    "build:next": "pnpm --filter lukittu-web build"
   },
   "devDependencies": {
     "prettier": "^3.5.3"
