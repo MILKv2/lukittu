@@ -173,7 +173,7 @@ function createLicenseEmbed(
 
     embed.addFields({
       name: 'Expiration Type',
-      value: `${license.expirationType} (starts on ${license.expirationStart})`,
+      value: `**${license.expirationType === 'DATE' ? 'Date' : 'Duration'}** (starts on **${license.expirationStart === 'ACTIVATION' ? 'Activation' : 'Creation'})**`,
       inline: true,
     });
 
@@ -305,7 +305,7 @@ function createLicenseEmbed(
   }
 
   embed.setAuthor({
-    name: `Team: ${teamName}`,
+    name: teamName,
     iconURL: teamImageUrl || undefined,
   });
 
