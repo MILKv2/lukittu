@@ -406,7 +406,7 @@ async function showBasicInfoStep(
     .addFields(
       {
         name: 'License Key',
-        value: `\`${state.licenseKey}\``,
+        value: `\`\`\`\n${state.licenseKey}\`\`\``,
         inline: false,
       },
       {
@@ -481,7 +481,7 @@ async function showExpirationStep(
     .addFields(
       {
         name: 'License Key',
-        value: `\`${state.licenseKey}\``,
+        value: `\`\`\`\n${state.licenseKey}\`\`\``,
         inline: false,
       },
       {
@@ -635,7 +635,7 @@ async function showLimitsStep(
     .addFields(
       {
         name: 'License Key',
-        value: `\`${state.licenseKey}\``,
+        value: `\`\`\`\n${state.licenseKey}\`\`\``,
         inline: false,
       },
       {
@@ -696,7 +696,7 @@ async function showMetadataStep(
     )
     .addFields({
       name: 'License Key',
-      value: `\`${state.licenseKey}\``,
+      value: `\`\`\`\n${state.licenseKey}\`\`\``,
       inline: false,
     })
     .setFooter({ text: 'Step 6 of 6: Metadata' });
@@ -779,7 +779,7 @@ async function showReviewStep(
     .addFields(
       {
         name: 'License Key',
-        value: `\`${state.licenseKey}\``,
+        value: `\`\`\`\n${state.licenseKey}\`\`\``,
         inline: false,
       },
       {
@@ -1016,7 +1016,7 @@ async function handleExpirationStartSelection(
       .addFields(
         {
           name: 'License Key',
-          value: `\`${state.licenseKey}\``,
+          value: `\`\`\`\n${state.licenseKey}\`\`\``,
           inline: false,
         },
         {
@@ -1147,7 +1147,7 @@ async function handleStatusSelection(
     .addFields(
       {
         name: 'License Key',
-        value: `\`${state.licenseKey}\``,
+        value: `\`\`\`\n${state.licenseKey}\`\`\``,
         inline: false,
       },
       {
@@ -1268,7 +1268,7 @@ async function handleExpirationDateModal(
       .addFields(
         {
           name: 'License Key',
-          value: `\`${state.licenseKey}\``,
+          value: `\`\`\`\n${state.licenseKey}\`\`\``,
           inline: false,
         },
         {
@@ -1396,7 +1396,7 @@ async function handleExpirationDaysModal(
       .addFields(
         {
           name: 'License Key',
-          value: `\`${state.licenseKey}\``,
+          value: `\`\`\`\n${state.licenseKey}\`\`\``,
           inline: false,
         },
         {
@@ -1577,7 +1577,7 @@ async function handleLimitsModal(
       .addFields(
         {
           name: 'License Key',
-          value: `\`${state.licenseKey}\``,
+          value: `\`\`\`\n${state.licenseKey}\`\`\``,
           inline: false,
         },
         {
@@ -1691,7 +1691,7 @@ async function handleAddMetadataModal(
       )
       .addFields({
         name: 'License Key',
-        value: `\`${state.licenseKey}\``,
+        value: `\`\`\`\n${state.licenseKey}\`\`\``,
         inline: false,
       })
       .setFooter({ text: 'Step 6 of 6: Metadata' });
@@ -1828,7 +1828,7 @@ async function finalizeLicenseCreation(
         },
         {
           name: 'License Key',
-          value: `\`${state.licenseKey}\``,
+          value: `\`\`\`\n${state.licenseKey}\`\`\``,
           inline: false,
         },
       );
