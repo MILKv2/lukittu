@@ -6,6 +6,7 @@ import {
   ButtonStyle,
   ComponentType,
   Colors,
+  MessageFlags,
 } from 'discord.js';
 import { Command } from '../../structures/command';
 import { logger } from '../../lib/logging/logger';
@@ -98,7 +99,6 @@ function createCustomerEmbed(
       inline: false,
     });
 
-  // Add basic customer information fields
   embed.addFields(
     {
       name: 'Created',
@@ -112,7 +112,6 @@ function createCustomerEmbed(
     },
   );
 
-  // Add address information if available
   if (customer.address) {
     embed.addFields({
       name: '\u200B',
@@ -134,7 +133,6 @@ function createCustomerEmbed(
     if (customer.address.country) addressParts.push(customer.address.country);
 
     if (addressParts.length > 0) {
-      // Create a Google Maps search link with the full address
       const fullAddress = addressParts.join(', ');
       const encodedAddress = encodeURIComponent(fullAddress);
       const mapsLink = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
@@ -153,7 +151,6 @@ function createCustomerEmbed(
     }
   }
 
-  // Add Licenses section
   if (customer.licenses && customer.licenses.length > 0) {
     embed.addFields({
       name: '\u200B',
@@ -161,7 +158,6 @@ function createCustomerEmbed(
       inline: false,
     });
 
-    // Display up to 5 licenses at most
     const displayLicenses = customer.licenses.slice(0, 5);
     const hasMoreLicenses = customer.licenses.length > 5;
 
@@ -191,7 +187,6 @@ function createCustomerEmbed(
     }
   }
 
-  // Add Metadata section
   if (customer.metadata.length > 0) {
     embed.addFields({
       name: '\u200B',
@@ -293,11 +288,9 @@ export default Command({
           return;
         }
 
-        // Generate HMAC for license key lookup
         licenseKeyLookup = generateHMAC(`${license}:${teamId}`);
       }
 
-      // Count total customers for pagination
       const totalCustomers = await prisma.customer.count({
         where: {
           teamId,
@@ -316,11 +309,9 @@ export default Command({
       });
       const totalPages = Math.max(totalCustomers, 1);
 
-      // Adjust page if out of bounds
       const validPage = page > totalPages ? 1 : page;
       const skip = (validPage - 1) * PAGE_SIZE;
 
-      // Fetch customers with pagination
       const customers = await prisma.customer.findMany({
         where: {
           teamId,
@@ -355,7 +346,6 @@ export default Command({
         },
       });
 
-      // Check if we found any customers
       if (customers.length === 0) {
         await interaction.editReply({
           content: 'No customers found matching your criteria.',
@@ -363,10 +353,8 @@ export default Command({
         return;
       }
 
-      // Get the current customer
       const currentCustomer = customers[0];
 
-      // Create embed for current customer
       const embed = createCustomerEmbed(
         currentCustomer,
         teamName,
@@ -382,33 +370,27 @@ export default Command({
         currentCustomer.id,
       );
 
-      // Send initial response with buttons
       const response = await interaction.editReply({
         embeds: [embed],
         components: actionRows,
       });
 
-      // Create button collector for pagination
       const collector = response.createMessageComponentCollector({
         componentType: ComponentType.Button,
-        time: 300000, // 5 minutes
+        time: 300000,
       });
 
-      // Keep track of the current page for the collector
       let currentPage = validPage;
 
-      // Handle pagination button clicks
       collector.on('collect', async (i) => {
-        // Verify the user who clicked is the one who invoked the command
         if (i.user.id !== interaction.user.id) {
           await i.reply({
             content: 'You cannot use these buttons.',
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
           });
           return;
         }
 
-        // Calculate the new page based on which button was clicked
         switch (i.customId) {
           case 'first':
             currentPage = 1;
@@ -424,13 +406,11 @@ export default Command({
             break;
         }
 
-        // Re-fetch and display the customers for the new page
         await i.deferUpdate();
 
         try {
           const skip = (currentPage - 1) * PAGE_SIZE;
 
-          // Fetch customer for the new page using the same filters
           const newPageCustomers = await prisma.customer.findMany({
             where: {
               teamId,
@@ -474,10 +454,8 @@ export default Command({
             return;
           }
 
-          // Get the current customer from the new page
           const newCustomer = newPageCustomers[0];
 
-          // Create new embed for the current customer
           const newEmbed = createCustomerEmbed(
             newCustomer,
             teamName,
@@ -493,7 +471,6 @@ export default Command({
             newCustomer.id,
           );
 
-          // Update the message with the new page
           await i.editReply({
             embeds: [newEmbed],
             components: newActionRows,
@@ -511,7 +488,6 @@ export default Command({
 
       collector.on('end', async () => {
         try {
-          // Keep the dashboard button but remove the pagination buttons
           const finalActionRow =
             new ActionRowBuilder<ButtonBuilder>().addComponents(
               new ButtonBuilder()
@@ -522,7 +498,6 @@ export default Command({
                 .setStyle(ButtonStyle.Link),
             );
 
-          // Remove buttons when collector expires but keep the dashboard link
           await interaction.editReply({
             embeds: [embed],
             components: [finalActionRow],

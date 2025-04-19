@@ -7,6 +7,7 @@ import {
   ComponentType,
   EmbedField,
   Colors,
+  MessageFlags,
 } from 'discord.js';
 import { Command } from '../../structures/command';
 import { logger } from '../../lib/logging/logger';
@@ -136,7 +137,6 @@ function createLicenseEmbed(
       inline: false,
     });
 
-  // Add basic license information fields
   embed.addFields(
     {
       name: 'Created',
@@ -155,7 +155,6 @@ function createLicenseEmbed(
     },
   );
 
-  // Add expiration information
   if (license.expirationType === 'NEVER') {
     embed.addFields({
       name: 'Expiration',
@@ -219,7 +218,6 @@ function createLicenseEmbed(
     embed.addFields(...limitsFields);
   }
 
-  // Add Products section
   if (license.products.length > 0) {
     embed.addFields({
       name: '\u200B',
@@ -227,7 +225,6 @@ function createLicenseEmbed(
       inline: false,
     });
 
-    // Display up to 5 products at most
     const displayProducts = license.products.slice(0, 5);
     const hasMoreProducts = license.products.length > 5;
 
@@ -252,7 +249,6 @@ function createLicenseEmbed(
     }
   }
 
-  // Add Customers section
   if (license.customers.length > 0) {
     embed.addFields({
       name: '\u200B',
@@ -260,7 +256,6 @@ function createLicenseEmbed(
       inline: false,
     });
 
-    // Display up to 5 customers at most
     const displayCustomers = license.customers.slice(0, 5);
     const hasMoreCustomers = license.customers.length > 5;
 
@@ -536,7 +531,6 @@ export default Command({
         }
       }
 
-      // Count total licenses for pagination
       const totalLicenses = await prisma.license.count({
         where: {
           teamId,
@@ -548,11 +542,9 @@ export default Command({
       });
       const totalPages = Math.max(totalLicenses, 1);
 
-      // Adjust page if out of bounds
       const validPage = page > totalPages ? 1 : page;
       const skip = (validPage - 1) * PAGE_SIZE;
 
-      // Fetch licenses with pagination
       const licenses = await prisma.license.findMany({
         where: {
           teamId,
@@ -571,7 +563,6 @@ export default Command({
         },
       });
 
-      // Check if we found any licenses
       if (licenses.length === 0) {
         await interaction.editReply({
           content: 'No licenses found matching your criteria.',
@@ -579,11 +570,9 @@ export default Command({
         return;
       }
 
-      // Get the current license
       const currentLicense = licenses[0];
       const decryptedKey = decryptLicenseKey(currentLicense.licenseKey);
 
-      // Create embed for current license
       const embed = createLicenseEmbed(
         currentLicense,
         decryptedKey,
@@ -600,33 +589,27 @@ export default Command({
         currentLicense.id,
       );
 
-      // Send initial response with buttons
       const response = await interaction.editReply({
         embeds: [embed],
         components: actionRows,
       });
 
-      // Create button collector for pagination
       const collector = response.createMessageComponentCollector({
         componentType: ComponentType.Button,
-        time: 300000, // 5 minutes
+        time: 300000,
       });
 
-      // Keep track of the current page for the collector
       let currentPage = validPage;
 
-      // Handle pagination button clicks
       collector.on('collect', async (i) => {
-        // Verify the user who clicked is the one who invoked the command
         if (i.user.id !== interaction.user.id) {
           await i.reply({
             content: 'You cannot use these buttons.',
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
           });
           return;
         }
 
-        // Calculate the new page based on which button was clicked
         switch (i.customId) {
           case 'first':
             currentPage = 1;
@@ -642,13 +625,11 @@ export default Command({
             break;
         }
 
-        // Re-fetch and display the licenses for the new page
         await i.deferUpdate();
 
         try {
           const skip = (currentPage - 1) * PAGE_SIZE;
 
-          // Fetch license for the new page using the same filters
           const newPageLicenses = await prisma.license.findMany({
             where: {
               teamId,
@@ -678,11 +659,9 @@ export default Command({
             return;
           }
 
-          // Get the current license from the new page
           const newLicense = newPageLicenses[0];
           const newDecryptedKey = decryptLicenseKey(newLicense.licenseKey);
 
-          // Create new embed for the current license using the helper function
           const newEmbed = createLicenseEmbed(
             newLicense,
             newDecryptedKey,
@@ -699,7 +678,6 @@ export default Command({
             newLicense.id,
           );
 
-          // Update the message with the new page
           await i.editReply({
             embeds: [newEmbed],
             components: newActionRows,
@@ -717,7 +695,6 @@ export default Command({
 
       collector.on('end', async () => {
         try {
-          // Keep the dashboard button but remove the pagination buttons
           const finalActionRow =
             new ActionRowBuilder<ButtonBuilder>().addComponents(
               new ButtonBuilder()
@@ -728,7 +705,6 @@ export default Command({
                 .setStyle(ButtonStyle.Link),
             );
 
-          // Remove buttons when collector expires but keep the dashboard link
           await interaction.editReply({
             embeds: [embed],
             components: [finalActionRow],

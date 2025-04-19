@@ -110,10 +110,8 @@ export default Command({
         return;
       }
 
-      // Find the selected team name
       const team = discordAccount.user.teams[0];
 
-      // Update the Discord account with the selected team
       await prisma.discordAccount.update({
         where: {
           id: discordAccount.id,
