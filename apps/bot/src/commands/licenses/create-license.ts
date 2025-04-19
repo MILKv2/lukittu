@@ -254,7 +254,14 @@ export default Command({
         step: 'basic_info',
       };
 
-      await startLicenseWizard(interaction, state, discordAccount.userId);
+      await startLicenseWizard(
+        interaction,
+        state,
+        discordAccount.userId,
+        selectedTeam.name || 'Unknown Team',
+        selectedTeam.imageUrl,
+        discordAccount.user.imageUrl,
+      );
     } catch (error) {
       logger.error('Error executing create-license command:', error);
       await interaction.editReply({
@@ -272,6 +279,9 @@ async function startLicenseWizard(
   interaction: ChatInputCommandInteraction,
   state: LicenseCreationState,
   userId: string,
+  teamName: string,
+  teamImageUrl: string | null,
+  userImageUrl: string | null,
 ) {
   await interaction.editReply({
     content: 'Creating license wizard...',
@@ -279,7 +289,7 @@ async function startLicenseWizard(
     components: [],
   });
 
-  await showBasicInfoStep(interaction, state);
+  await showBasicInfoStep(interaction, state, teamName, teamImageUrl);
 
   const message = await interaction.fetchReply();
   const collector = message.createMessageComponentCollector({
@@ -299,7 +309,9 @@ async function startLicenseWizard(
       type HandlerFunction = (
         i: MessageComponentInteraction,
         state: LicenseCreationState,
-        userId?: string,
+        teamName?: string,
+        teamImageUrl?: string | null,
+        userImageUrl?: string | null,
       ) => Promise<void>;
 
       const handlers: Record<string, HandlerFunction> = {
@@ -310,18 +322,36 @@ async function startLicenseWizard(
           await handleExpirationTypeSelection(
             i as StringSelectMenuInteraction,
             state,
+            teamName,
+            teamImageUrl,
           ),
         wizard_expiration_start: async (i, state) =>
           await handleExpirationStartSelection(
             i as StringSelectMenuInteraction,
             state,
+            teamName,
+            teamImageUrl,
           ),
         wizard_status: async (i, state) =>
-          await handleStatusSelection(i as StringSelectMenuInteraction, state),
+          await handleStatusSelection(
+            i as StringSelectMenuInteraction,
+            state,
+            teamName,
+            teamImageUrl,
+          ),
 
-        wizard_add_metadata: handleAddMetadataModal,
+        wizard_add_metadata: async (i, state) => {
+          await handleAddMetadataModal(i, state, teamName, teamImageUrl);
+        },
         wizard_create_license: async (i, state) => {
-          await finalizeLicenseCreation(i, state, userId);
+          await finalizeLicenseCreation(
+            i,
+            state,
+            userId,
+            teamName,
+            teamImageUrl,
+            userImageUrl,
+          );
           collector.stop();
         },
         wizard_cancel: async (i) => {
@@ -341,7 +371,7 @@ async function startLicenseWizard(
       const handler = handlers[i.customId];
 
       if (handler) {
-        await handler(i, state, userId);
+        await handler(i, state, teamName, teamImageUrl, userImageUrl);
       } else {
         logger.info(
           `Unknown action ID: ${i.customId}. This should not happen.`,
@@ -396,6 +426,8 @@ async function startLicenseWizard(
 async function showBasicInfoStep(
   interaction: ChatInputCommandInteraction | MessageComponentInteraction,
   state: LicenseCreationState,
+  teamName: string,
+  teamImageUrl: string | null,
 ) {
   const embed = new EmbedBuilder()
     .setTitle('License Creation Wizard - Basic Info')
@@ -415,6 +447,10 @@ async function showBasicInfoStep(
         inline: false,
       },
     )
+    .setAuthor({
+      name: teamName,
+      iconURL: teamImageUrl || undefined,
+    })
     .setFooter({ text: 'Step 1 of 6: Basic Info' });
 
   const statusSelect = new StringSelectMenuBuilder()
@@ -474,6 +510,8 @@ async function showBasicInfoStep(
 async function showExpirationStep(
   interaction: MessageComponentInteraction,
   state: LicenseCreationState,
+  teamName: string,
+  teamImageUrl: string | null,
 ) {
   const embed = new EmbedBuilder()
     .setTitle('License Creation Wizard - Expiration Settings')
@@ -490,6 +528,10 @@ async function showExpirationStep(
         inline: true,
       },
     )
+    .setAuthor({
+      name: teamName,
+      iconURL: teamImageUrl || undefined,
+    })
     .setFooter({ text: 'Step 2 of 6: Expiration Settings' });
 
   if (state.expirationType === 'DURATION') {
@@ -625,6 +667,8 @@ async function showExpirationStep(
 async function showLimitsStep(
   interaction: MessageComponentInteraction,
   state: LicenseCreationState,
+  teamName: string,
+  teamImageUrl: string | null,
 ) {
   const embed = new EmbedBuilder()
     .setTitle('License Creation Wizard - License Limits')
@@ -649,6 +693,10 @@ async function showLimitsStep(
         inline: true,
       },
     )
+    .setAuthor({
+      name: teamName,
+      iconURL: teamImageUrl || undefined,
+    })
     .setFooter({ text: 'Step 3 of 6: License Limits' });
 
   const limitsButton = new ButtonBuilder()
@@ -687,6 +735,8 @@ async function showLimitsStep(
 async function showMetadataStep(
   interaction: MessageComponentInteraction,
   state: LicenseCreationState,
+  teamName: string,
+  teamImageUrl: string | null,
 ) {
   const embed = new EmbedBuilder()
     .setTitle('License Creation Wizard - Metadata')
@@ -698,6 +748,10 @@ async function showMetadataStep(
       name: 'License Key',
       value: `\`\`\`\n${state.licenseKey}\`\`\``,
       inline: false,
+    })
+    .setAuthor({
+      name: teamName,
+      iconURL: teamImageUrl || undefined,
     })
     .setFooter({ text: 'Step 6 of 6: Metadata' });
 
@@ -757,6 +811,8 @@ async function showMetadataStep(
 async function showReviewStep(
   interaction: MessageComponentInteraction,
   state: LicenseCreationState,
+  teamName: string,
+  teamImageUrl: string | null,
 ) {
   const products =
     state.productIds.length > 0
@@ -787,7 +843,11 @@ async function showReviewStep(
         value: state.suspended ? '🔴 Suspended' : '🟢 Active',
         inline: true,
       },
-    );
+    )
+    .setAuthor({
+      name: teamName,
+      iconURL: teamImageUrl || undefined,
+    });
 
   if (state.expirationType === LicenseExpirationType.NEVER) {
     embed.addFields({
@@ -931,23 +991,28 @@ async function showReviewStep(
 async function handleNextStep(
   interaction: MessageComponentInteraction,
   state: LicenseCreationState,
+  teamName?: string,
+  teamImageUrl?: string | null,
 ) {
+  const team = teamName || 'Unknown Team';
+  const imageUrl = teamImageUrl || null;
+
   switch (state.step) {
     case 'basic_info':
       state.step = 'expiration';
-      await showExpirationStep(interaction, state);
+      await showExpirationStep(interaction, state, team, imageUrl);
       break;
     case 'expiration':
       state.step = 'limits';
-      await showLimitsStep(interaction, state);
+      await showLimitsStep(interaction, state, team, imageUrl);
       break;
     case 'limits':
       state.step = 'metadata';
-      await showMetadataStep(interaction, state);
+      await showMetadataStep(interaction, state, team, imageUrl);
       break;
     case 'metadata':
       state.step = 'review';
-      await showReviewStep(interaction, state);
+      await showReviewStep(interaction, state, team, imageUrl);
       break;
   }
 }
@@ -958,23 +1023,28 @@ async function handleNextStep(
 async function handlePreviousStep(
   interaction: MessageComponentInteraction,
   state: LicenseCreationState,
+  teamName?: string,
+  teamImageUrl?: string | null,
 ) {
+  const team = teamName || 'Unknown Team';
+  const imageUrl = teamImageUrl || null;
+
   switch (state.step) {
     case 'expiration':
       state.step = 'basic_info';
-      await showBasicInfoStep(interaction, state);
+      await showBasicInfoStep(interaction, state, team, imageUrl);
       break;
     case 'limits':
       state.step = 'expiration';
-      await showExpirationStep(interaction, state);
+      await showExpirationStep(interaction, state, team, imageUrl);
       break;
     case 'metadata':
       state.step = 'limits';
-      await showLimitsStep(interaction, state);
+      await showLimitsStep(interaction, state, team, imageUrl);
       break;
     case 'review':
       state.step = 'metadata';
-      await showMetadataStep(interaction, state);
+      await showMetadataStep(interaction, state, team, imageUrl);
       break;
   }
 }
@@ -985,6 +1055,8 @@ async function handlePreviousStep(
 async function handleExpirationTypeSelection(
   interaction: StringSelectMenuInteraction,
   state: LicenseCreationState,
+  teamName?: string,
+  teamImageUrl?: string | null,
 ) {
   const selectedType = interaction.values[0] as LicenseExpirationType;
   state.expirationType = selectedType;
@@ -995,7 +1067,12 @@ async function handleExpirationTypeSelection(
     state.expirationStart = LicenseExpirationStart.CREATION;
   }
 
-  await showExpirationStep(interaction, state);
+  await showExpirationStep(
+    interaction,
+    state,
+    teamName || 'Unknown Team',
+    teamImageUrl || null,
+  );
 }
 
 /**
@@ -1004,6 +1081,8 @@ async function handleExpirationTypeSelection(
 async function handleExpirationStartSelection(
   interaction: StringSelectMenuInteraction,
   state: LicenseCreationState,
+  teamName?: string,
+  teamImageUrl?: string | null,
 ) {
   try {
     state.expirationStart = interaction.values[0] as LicenseExpirationStart;
@@ -1040,6 +1119,10 @@ async function handleExpirationStartSelection(
           inline: true,
         },
       )
+      .setAuthor({
+        name: teamName || 'Unknown Team',
+        iconURL: teamImageUrl || undefined,
+      })
       .setFooter({ text: 'Step 2 of 6: Expiration Settings' });
 
     const components: ActionRowBuilder<
@@ -1135,6 +1218,8 @@ async function handleExpirationStartSelection(
 async function handleStatusSelection(
   interaction: StringSelectMenuInteraction,
   state: LicenseCreationState,
+  teamName?: string,
+  teamImageUrl?: string | null,
 ) {
   state.suspended = interaction.values[0] === 'suspended';
 
@@ -1156,6 +1241,10 @@ async function handleStatusSelection(
         inline: false,
       },
     )
+    .setAuthor({
+      name: teamName || 'Unknown Team',
+      iconURL: teamImageUrl || undefined,
+    })
     .setFooter({ text: 'Step 1 of 6: Basic Info' });
 
   const statusSelect = new StringSelectMenuBuilder()
@@ -1632,6 +1721,8 @@ async function handleLimitsModal(
 async function handleAddMetadataModal(
   interaction: MessageComponentInteraction,
   state: LicenseCreationState,
+  teamName: string,
+  teamImageUrl: string | null,
 ) {
   const modal = new ModalBuilder()
     .setCustomId('metadata_modal')
@@ -1693,6 +1784,10 @@ async function handleAddMetadataModal(
         name: 'License Key',
         value: `\`\`\`\n${state.licenseKey}\`\`\``,
         inline: false,
+      })
+      .setAuthor({
+        name: teamName,
+        iconURL: teamImageUrl || undefined,
       })
       .setFooter({ text: 'Step 6 of 6: Metadata' });
 
@@ -1758,6 +1853,9 @@ async function finalizeLicenseCreation(
   interaction: MessageComponentInteraction,
   state: LicenseCreationState,
   userId: string,
+  teamName?: string,
+  teamImageUrl?: string | null,
+  userImageUrl?: string | null,
 ) {
   try {
     await interaction.deferUpdate();
@@ -1831,7 +1929,15 @@ async function finalizeLicenseCreation(
           value: `\`\`\`\n${state.licenseKey}\`\`\``,
           inline: false,
         },
-      );
+      )
+      .setAuthor({
+        name: teamName || 'Unknown Team',
+        iconURL: teamImageUrl || undefined,
+      })
+      .setFooter({
+        text: 'License created successfully',
+        iconURL: userImageUrl || undefined,
+      });
 
     const dashboardButton = new ButtonBuilder()
       .setLabel('View in Dashboard')
