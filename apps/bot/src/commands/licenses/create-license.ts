@@ -273,7 +273,7 @@ export default Command({
 });
 
 /**
- * Starts the license creation wizard
+ * Starts the license creation wizard with improved error handling
  */
 async function startLicenseWizard(
   interaction: ChatInputCommandInteraction,
@@ -283,141 +283,133 @@ async function startLicenseWizard(
   teamImageUrl: string | null,
   userImageUrl: string | null,
 ) {
-  await interaction.editReply({
-    content: 'Creating license wizard...',
-    embeds: [],
-    components: [],
-  });
+  try {
+    await interaction.editReply({
+      content: 'Creating license wizard...',
+      embeds: [],
+      components: [],
+    });
 
-  await showBasicInfoStep(interaction, state, teamName, teamImageUrl);
+    await showBasicInfoStep(interaction, state, teamName, teamImageUrl);
 
-  const message = await interaction.fetchReply();
-  const collector = message.createMessageComponentCollector({
-    time: 900000,
-  });
+    const message = await interaction.fetchReply();
+    const collector = message.createMessageComponentCollector({
+      time: 900000, // 15 minutes
+    });
 
-  collector.on('collect', async (i) => {
-    if (i.user.id !== interaction.user.id) {
-      await i.reply({
-        content: 'You cannot use these components.',
-        flags: MessageFlags.Ephemeral,
-      });
-      return;
-    }
-
-    try {
-      type HandlerFunction = (
-        i: MessageComponentInteraction,
-        state: LicenseCreationState,
-        teamName?: string,
-        teamImageUrl?: string | null,
-        userImageUrl?: string | null,
-      ) => Promise<void>;
-
-      const handlers: Record<string, HandlerFunction> = {
-        wizard_next: handleNextStep,
-        wizard_back: handlePreviousStep,
-
-        wizard_expiration: async (i, state) =>
-          await handleExpirationTypeSelection(
-            i as StringSelectMenuInteraction,
-            state,
-            teamName,
-            teamImageUrl,
-          ),
-        wizard_expiration_start: async (i, state) =>
-          await handleExpirationStartSelection(
-            i as StringSelectMenuInteraction,
-            state,
-            teamName,
-            teamImageUrl,
-          ),
-        wizard_status: async (i, state) =>
-          await handleStatusSelection(
-            i as StringSelectMenuInteraction,
-            state,
-            teamName,
-            teamImageUrl,
-          ),
-
-        wizard_add_metadata: async (i, state) => {
-          await handleAddMetadataModal(i, state, teamName, teamImageUrl);
-        },
-        wizard_create_license: async (i, state) => {
-          await finalizeLicenseCreation(
-            i,
-            state,
-            userId,
-            teamName,
-            teamImageUrl,
-            userImageUrl,
-          );
-          collector.stop();
-        },
-        wizard_cancel: async (i) => {
-          await i.update({
-            content: 'License creation cancelled.',
-            embeds: [],
-            components: [],
-          });
-          collector.stop();
-        },
-
-        expiration_date_modal: handleExpirationDateModal,
-        expiration_days_modal: handleExpirationDaysModal,
-        limits_modal: handleLimitsModal,
-      };
-
-      const handler = handlers[i.customId];
-
-      if (handler) {
-        await handler(i, state, teamName, teamImageUrl, userImageUrl);
-      } else {
-        logger.info(
-          `Unknown action ID: ${i.customId}. This should not happen.`,
-        );
+    collector.on('collect', async (i) => {
+      if (i.user.id !== interaction.user.id) {
         await i.reply({
-          content: 'Unknown action. Please try again.',
+          content: 'You cannot use these components.',
           flags: MessageFlags.Ephemeral,
         });
+        return;
       }
-    } catch (error) {
-      logger.error('Error handling wizard interaction:', error);
 
       try {
-        if (!i.replied && !i.deferred) {
-          await i.reply({
-            content:
-              'An error occurred while processing your action. Please try again.',
-            flags: MessageFlags.Ephemeral,
-          });
+        type HandlerFunction = (
+          i: MessageComponentInteraction,
+          state: LicenseCreationState,
+          teamName?: string,
+          teamImageUrl?: string | null,
+          userImageUrl?: string | null,
+        ) => Promise<void>;
+
+        const handlers: Record<string, HandlerFunction> = {
+          wizard_next: handleNextStep,
+          wizard_back: handlePreviousStep,
+
+          wizard_expiration: async (i, state) =>
+            await handleExpirationTypeSelection(
+              i as StringSelectMenuInteraction,
+              state,
+              teamName,
+              teamImageUrl,
+            ),
+          wizard_expiration_start: async (i, state) =>
+            await handleExpirationStartSelection(
+              i as StringSelectMenuInteraction,
+              state,
+              teamName,
+              teamImageUrl,
+            ),
+          wizard_status: async (i, state) =>
+            await handleStatusSelection(
+              i as StringSelectMenuInteraction,
+              state,
+              teamName,
+              teamImageUrl,
+            ),
+
+          wizard_add_metadata: async (i, state) => {
+            await handleAddMetadataModal(i, state, teamName, teamImageUrl);
+          },
+          wizard_create_license: async (i, state) => {
+            await finalizeLicenseCreation(
+              i,
+              state,
+              userId,
+              teamName,
+              teamImageUrl,
+              userImageUrl,
+            );
+            collector.stop();
+          },
+          wizard_cancel: async (i) => {
+            await i.update({
+              content: 'License creation cancelled.',
+              embeds: [],
+              components: [],
+            });
+            collector.stop();
+          },
+
+          expiration_date_modal: handleExpirationDateModal,
+          expiration_days_modal: handleExpirationDaysModal,
+          limits_modal: handleLimitsModal,
+        };
+
+        const handler = handlers[i.customId];
+
+        if (handler) {
+          await handler(i, state, teamName, teamImageUrl, userImageUrl);
         } else {
-          await i.followUp({
-            content:
-              'An error occurred while processing your action. Please try again.',
+          logger.info(
+            `Unknown action ID: ${i.customId}. This should not happen.`,
+          );
+          await i.reply({
+            content: 'Unknown action. Please try again.',
             flags: MessageFlags.Ephemeral,
           });
         }
-      } catch (secondError) {
-        logger.error('Error handling error response:', secondError);
-      }
-    }
-  });
-
-  collector.on('end', async (_collected, reason) => {
-    if (reason === 'time') {
-      try {
-        await interaction.editReply({
-          content:
-            'License creation wizard timed out. Please start over if you want to create a license.',
-          embeds: [],
-          components: [],
-        });
       } catch (error) {
-        logger.error('Error handling wizard timeout:', error);
+        await handleWizardError(i, error, 'processing your action');
       }
-    }
-  });
+    });
+
+    collector.on('end', async (_collected, reason) => {
+      if (reason === 'time') {
+        try {
+          await interaction.editReply({
+            content:
+              'License creation wizard timed out due to inactivity (15 minutes). Please start over if you want to create a license.',
+            embeds: [],
+            components: [],
+          });
+        } catch (error) {
+          logger.error('Error handling wizard timeout:', error);
+        }
+      }
+    });
+  } catch (error) {
+    logger.error('Error starting license wizard:', error);
+    await interaction.editReply({
+      content:
+        'An error occurred while starting the license creation wizard. Please try again later.',
+      embeds: [],
+      components: [],
+    });
+  }
 }
 
 /**
@@ -994,26 +986,30 @@ async function handleNextStep(
   teamName?: string,
   teamImageUrl?: string | null,
 ) {
-  const team = teamName || 'Unknown Team';
-  const imageUrl = teamImageUrl || null;
+  try {
+    const team = teamName || 'Unknown Team';
+    const imageUrl = teamImageUrl || null;
 
-  switch (state.step) {
-    case 'basic_info':
-      state.step = 'expiration';
-      await showExpirationStep(interaction, state, team, imageUrl);
-      break;
-    case 'expiration':
-      state.step = 'limits';
-      await showLimitsStep(interaction, state, team, imageUrl);
-      break;
-    case 'limits':
-      state.step = 'metadata';
-      await showMetadataStep(interaction, state, team, imageUrl);
-      break;
-    case 'metadata':
-      state.step = 'review';
-      await showReviewStep(interaction, state, team, imageUrl);
-      break;
+    switch (state.step) {
+      case 'basic_info':
+        state.step = 'expiration';
+        await showExpirationStep(interaction, state, team, imageUrl);
+        break;
+      case 'expiration':
+        state.step = 'limits';
+        await showLimitsStep(interaction, state, team, imageUrl);
+        break;
+      case 'limits':
+        state.step = 'metadata';
+        await showMetadataStep(interaction, state, team, imageUrl);
+        break;
+      case 'metadata':
+        state.step = 'review';
+        await showReviewStep(interaction, state, team, imageUrl);
+        break;
+    }
+  } catch (error) {
+    await handleWizardError(interaction, error, 'navigating to the next step');
   }
 }
 
@@ -1026,26 +1022,34 @@ async function handlePreviousStep(
   teamName?: string,
   teamImageUrl?: string | null,
 ) {
-  const team = teamName || 'Unknown Team';
-  const imageUrl = teamImageUrl || null;
+  try {
+    const team = teamName || 'Unknown Team';
+    const imageUrl = teamImageUrl || null;
 
-  switch (state.step) {
-    case 'expiration':
-      state.step = 'basic_info';
-      await showBasicInfoStep(interaction, state, team, imageUrl);
-      break;
-    case 'limits':
-      state.step = 'expiration';
-      await showExpirationStep(interaction, state, team, imageUrl);
-      break;
-    case 'metadata':
-      state.step = 'limits';
-      await showLimitsStep(interaction, state, team, imageUrl);
-      break;
-    case 'review':
-      state.step = 'metadata';
-      await showMetadataStep(interaction, state, team, imageUrl);
-      break;
+    switch (state.step) {
+      case 'expiration':
+        state.step = 'basic_info';
+        await showBasicInfoStep(interaction, state, team, imageUrl);
+        break;
+      case 'limits':
+        state.step = 'expiration';
+        await showExpirationStep(interaction, state, team, imageUrl);
+        break;
+      case 'metadata':
+        state.step = 'limits';
+        await showLimitsStep(interaction, state, team, imageUrl);
+        break;
+      case 'review':
+        state.step = 'metadata';
+        await showMetadataStep(interaction, state, team, imageUrl);
+        break;
+    }
+  } catch (error) {
+    await handleWizardError(
+      interaction,
+      error,
+      'navigating to the previous step',
+    );
   }
 }
 
@@ -1058,21 +1062,25 @@ async function handleExpirationTypeSelection(
   teamName?: string,
   teamImageUrl?: string | null,
 ) {
-  const selectedType = interaction.values[0] as LicenseExpirationType;
-  state.expirationType = selectedType;
+  try {
+    const selectedType = interaction.values[0] as LicenseExpirationType;
+    state.expirationType = selectedType;
 
-  if (selectedType === LicenseExpirationType.NEVER) {
-    state.expirationDate = undefined;
-    state.expirationDays = undefined;
-    state.expirationStart = LicenseExpirationStart.CREATION;
+    if (selectedType === LicenseExpirationType.NEVER) {
+      state.expirationDate = undefined;
+      state.expirationDays = undefined;
+      state.expirationStart = LicenseExpirationStart.CREATION;
+    }
+
+    await showExpirationStep(
+      interaction,
+      state,
+      teamName || 'Unknown Team',
+      teamImageUrl || null,
+    );
+  } catch (error) {
+    await handleWizardError(interaction, error, 'updating expiration type');
   }
-
-  await showExpirationStep(
-    interaction,
-    state,
-    teamName || 'Unknown Team',
-    teamImageUrl || null,
-  );
 }
 
 /**
@@ -1954,17 +1962,54 @@ async function finalizeLicenseCreation(
       components: [finalRow],
     });
   } catch (error) {
-    logger.error('Error creating license:', error);
+    const errorId = Math.random().toString(36).substring(2, 8);
+    logger.error(`Error ID ${errorId} - Error creating license:`, error);
+
     try {
       await interaction.editReply({
-        content:
-          'An error occurred while creating the license. Please try again later.',
+        content: `An error occurred while creating the license. Please try again later. (Error ID: ${errorId})`,
         embeds: [],
         components: [],
       });
     } catch (secondError) {
-      logger.error('Error sending error response:', secondError);
+      logger.error(
+        `Error ID ${errorId} - Failed to send error response:`,
+        secondError,
+      );
     }
+  }
+}
+
+/**
+ * Centralized error handler for wizard interactions
+ */
+async function handleWizardError(
+  interaction: MessageComponentInteraction | StringSelectMenuInteraction,
+  error: unknown,
+  context: string,
+) {
+  const errorId = Math.random().toString(36).substring(2, 8);
+  logger.error(`Error ID ${errorId} - Error ${context}:`, error);
+
+  try {
+    const errorMessage = `An error occurred while ${context}. Please try again. (Error ID: ${errorId})`;
+
+    if (!interaction.replied && !interaction.deferred) {
+      await interaction.reply({
+        content: errorMessage,
+        flags: MessageFlags.Ephemeral,
+      });
+    } else {
+      await interaction.followUp({
+        content: errorMessage,
+        flags: MessageFlags.Ephemeral,
+      });
+    }
+  } catch (followupError) {
+    logger.error(
+      `Error ID ${errorId} - Failed to send error response:`,
+      followupError,
+    );
   }
 }
 
