@@ -356,12 +356,9 @@ export default Command({
       },
     ],
   },
-  autocomplete: async (interaction) => {
+  autocomplete: async (interaction, discordAccount) => {
     try {
       const focusedOption = interaction.options.getFocused(true);
-      const discordAccount = await prisma.discordAccount.findUnique({
-        where: { discordId: interaction.user.id },
-      });
 
       if (!discordAccount?.selectedTeamId) {
         return interaction.respond([]);
@@ -411,7 +408,7 @@ export default Command({
       await interaction.respond([]);
     }
   },
-  execute: async (interaction) => {
+  execute: async (interaction, discordAccount) => {
     try {
       const page = interaction.options.getInteger('page') || 1;
       const status = interaction.options.getString('status') as
@@ -421,14 +418,6 @@ export default Command({
       const license = interaction.options.getString('license') || '';
       const productId = interaction.options.getString('product');
       const customerId = interaction.options.getString('customer');
-
-      const discordAccount = await prisma.discordAccount.findUnique({
-        where: { discordId: interaction.user.id },
-        include: {
-          selectedTeam: true,
-          user: true,
-        },
-      });
 
       const selectedTeam = discordAccount?.selectedTeam;
       if (!selectedTeam) {

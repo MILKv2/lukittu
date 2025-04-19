@@ -252,19 +252,11 @@ export default Command({
       },
     ],
   },
-  execute: async (interaction) => {
+  execute: async (interaction, discordAccount) => {
     try {
       const page = interaction.options.getInteger('page') || 1;
       const search = interaction.options.getString('search') || '';
       const license = interaction.options.getString('license') || '';
-
-      const discordAccount = await prisma.discordAccount.findUnique({
-        where: { discordId: interaction.user.id },
-        include: {
-          selectedTeam: true,
-          user: true,
-        },
-      });
 
       const selectedTeam = discordAccount?.selectedTeam;
       if (!selectedTeam) {

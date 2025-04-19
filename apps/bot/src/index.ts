@@ -11,8 +11,19 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { Command } from './structures/command';
 import { REST } from '@discordjs/rest';
-import { prisma } from '@lukittu/prisma';
+import { DiscordAccount, Limits, prisma, Team, User } from '@lukittu/prisma';
 import { logger } from './lib/logging/logger';
+
+export type LinkedDiscordAccount = DiscordAccount & {
+  user: Omit<User, 'passwordHash'> & {
+    teams: Team[];
+  };
+  selectedTeam:
+    | (Team & {
+        limits: Limits | null;
+      })
+    | null;
+};
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds],
@@ -83,11 +94,59 @@ async function registerCommands() {
 // Handle interactions
 client.on(Events.InteractionCreate, async (interaction) => {
   // Check if the user has a linked Discord account
-  const checkLinkedAccount = async (userId: string) => {
-    const discordAccount = await prisma.discordAccount.findUnique({
-      where: { discordId: userId },
-    });
-    return !!discordAccount;
+  const checkLinkedAccountAndPermission = async (
+    userId: string,
+  ): Promise<LinkedDiscordAccount | null> => {
+    try {
+      const discordAccount = await prisma.discordAccount.findUnique({
+        where: { discordId: userId },
+        include: {
+          selectedTeam: {
+            where: {
+              deletedAt: null,
+            },
+            include: {
+              limits: true,
+            },
+          },
+          user: {
+            include: {
+              teams: {
+                where: {
+                  deletedAt: null,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      // If user has selected a team, check if they are still a member of that team
+      // If not, set selectedTeamId to null
+      if (discordAccount) {
+        const selectedTeam = discordAccount.selectedTeamId;
+
+        if (selectedTeam) {
+          const isInTeam = discordAccount.user.teams.some(
+            (team) => team.id === selectedTeam,
+          );
+
+          if (!isInTeam) {
+            await prisma.discordAccount.update({
+              where: { id: discordAccount.id },
+              data: { selectedTeamId: null },
+            });
+          }
+        }
+      }
+
+      return discordAccount;
+    } catch (error) {
+      logger.error(`Error checking linked account for user ${userId}:`, error);
+      throw new Error(
+        'Failed to verify linked account due to a database error',
+      );
+    }
   };
 
   if (interaction.isChatInputCommand()) {
@@ -100,12 +159,23 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
     try {
       // Check if the user has linked their Discord account
-      const hasLinkedAccount = await checkLinkedAccount(interaction.user.id);
+      let linkedDiscordAccount: LinkedDiscordAccount | null = null;
+      try {
+        linkedDiscordAccount = await checkLinkedAccountAndPermission(
+          interaction.user.id,
+        );
 
-      if (!hasLinkedAccount) {
+        if (!linkedDiscordAccount) {
+          return interaction.reply({
+            content:
+              'You need to link your Discord account before using this command.',
+            flags: MessageFlags.Ephemeral,
+          });
+        }
+      } catch (accountError) {
+        logger.error('Account verification error:', accountError);
         return interaction.reply({
-          content:
-            'You need to link your Discord account before using this command.',
+          content: 'Unable to verify your account. Please try again later.',
           flags: MessageFlags.Ephemeral,
         });
       }
@@ -115,7 +185,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
         flags: command.data.ephemeral ? MessageFlags.Ephemeral : undefined,
       });
 
-      await command.execute(interaction);
+      await command.execute(interaction, linkedDiscordAccount);
     } catch (error) {
       logger.error(`Error executing ${interaction.commandName}`);
       logger.error(error);
@@ -143,14 +213,25 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
     try {
       // For autocomplete, we still check if the account is linked
-      const hasLinkedAccount = await checkLinkedAccount(interaction.user.id);
+      let linkedDiscordAccount: LinkedDiscordAccount | null = null;
+      try {
+        linkedDiscordAccount = await checkLinkedAccountAndPermission(
+          interaction.user.id,
+        );
 
-      if (!hasLinkedAccount) {
-        // If not linked, return an empty response
+        if (!linkedDiscordAccount) {
+          // If not linked, return an empty response
+          return interaction.respond([]);
+        }
+      } catch (accountError) {
+        logger.error(
+          'Account verification error during autocomplete:',
+          accountError,
+        );
         return interaction.respond([]);
       }
 
-      await command.autocomplete(interaction);
+      await command.autocomplete(interaction, linkedDiscordAccount);
     } catch (error) {
       logger.error(
         `Error handling autocomplete for ${interaction.commandName}`,

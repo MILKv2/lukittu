@@ -83,12 +83,9 @@ export default Command({
       },
     ],
   },
-  autocomplete: async (interaction) => {
+  autocomplete: async (interaction, discordAccount) => {
     try {
       const focusedOption = interaction.options.getFocused(true);
-      const discordAccount = await prisma.discordAccount.findUnique({
-        where: { discordId: interaction.user.id },
-      });
 
       if (!discordAccount?.selectedTeamId) {
         return interaction.respond([]);
@@ -166,20 +163,8 @@ export default Command({
       await interaction.respond([]);
     }
   },
-  execute: async (interaction) => {
+  execute: async (interaction, discordAccount) => {
     try {
-      const discordAccount = await prisma.discordAccount.findUnique({
-        where: { discordId: interaction.user.id },
-        include: {
-          selectedTeam: {
-            include: {
-              limits: true,
-            },
-          },
-          user: true,
-        },
-      });
-
       const selectedTeam = discordAccount?.selectedTeam;
       if (!selectedTeam) {
         await interaction.editReply({

@@ -19,33 +19,8 @@ export default Command({
       },
     ],
   },
-  autocomplete: async (interaction) => {
+  autocomplete: async (interaction, discordAccount) => {
     try {
-      const discordAccount = await prisma.discordAccount.findUnique({
-        where: {
-          discordId: interaction.user.id,
-        },
-        include: {
-          user: {
-            include: {
-              teams: {
-                where: {
-                  deletedAt: null,
-                },
-                select: {
-                  id: true,
-                  name: true,
-                },
-              },
-            },
-          },
-        },
-      });
-
-      if (!discordAccount) {
-        return interaction.respond([]);
-      }
-
       const teams = discordAccount.user.teams;
 
       const focusedValue = interaction.options.getFocused().toLowerCase();
@@ -64,7 +39,7 @@ export default Command({
       await interaction.respond([]);
     }
   },
-  execute: async (interaction) => {
+  execute: async (interaction, discordAccount) => {
     try {
       const teamId = interaction.options.getString('team', true);
 
@@ -74,24 +49,6 @@ export default Command({
         });
         return;
       }
-
-      const discordAccount = await prisma.discordAccount.findUnique({
-        where: {
-          discordId: interaction.user.id,
-        },
-        include: {
-          user: {
-            include: {
-              teams: {
-                where: {
-                  id: teamId,
-                  deletedAt: null,
-                },
-              },
-            },
-          },
-        },
-      });
 
       if (!discordAccount) {
         await interaction.editReply({
