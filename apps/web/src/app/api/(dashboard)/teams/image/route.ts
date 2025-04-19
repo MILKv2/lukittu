@@ -1,6 +1,4 @@
-import { prisma } from '@lukittu/prisma';
 import { createAuditLog } from '@/lib/logging/audit-log';
-import { logger } from '@/lib/logging/logger';
 import {
   deleteFileFromPublicS3,
   uploadFileToPublicS3,
@@ -15,7 +13,12 @@ import {
 import { bytesToSize } from '@/lib/utils/number-helpers';
 import { ErrorResponse } from '@/types/common-api-types';
 import { HttpStatus } from '@/types/http-status';
-import { AuditLogAction, AuditLogTargetType } from '@lukittu/prisma';
+import {
+  AuditLogAction,
+  AuditLogTargetType,
+  logger,
+  prisma,
+} from '@lukittu/prisma';
 import { randomUUID } from 'crypto';
 import { getTranslations } from 'next-intl/server';
 import { NextRequest, NextResponse } from 'next/server';

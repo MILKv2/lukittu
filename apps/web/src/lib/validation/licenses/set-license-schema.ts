@@ -1,4 +1,4 @@
-import { regex } from '@/lib/constants/regex';
+import { regex } from '@lukittu/prisma';
 import { z } from 'zod';
 import { metadataSchema } from '../shared/metadata-schema';
 import { I18nTranslator } from '@/types/i18n-types';

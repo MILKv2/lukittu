@@ -1,31 +1,32 @@
 import {
+  encryptLicenseKey,
+  generateHMAC,
+  generateUniqueLicense,
+  LicenseExpirationStart,
+  LicenseExpirationType,
+  logger,
+  prisma,
+} from '@lukittu/prisma';
+import { regex } from '@lukittu/prisma/src/constants/regex';
+import {
   ActionRowBuilder,
+  ApplicationCommandOptionType,
   ButtonBuilder,
   ButtonStyle,
   ChatInputCommandInteraction,
   Colors,
   EmbedBuilder,
   EmbedField,
+  MessageComponentInteraction,
+  MessageFlags,
   ModalBuilder,
   StringSelectMenuBuilder,
+  StringSelectMenuInteraction,
   StringSelectMenuOptionBuilder,
   TextInputBuilder,
   TextInputStyle,
-  MessageComponentInteraction,
-  StringSelectMenuInteraction,
-  ApplicationCommandOptionType,
-  MessageFlags,
 } from 'discord.js';
 import { Command } from '../../structures/command';
-import { logger } from '../../lib/logging/logger';
-import {
-  LicenseExpirationStart,
-  LicenseExpirationType,
-  prisma,
-} from '@lukittu/prisma';
-import { encryptLicenseKey, generateHMAC } from '../../lib/security/crypto';
-import { regex } from '../../lib/constants/regex';
-import { generateUniqueLicense } from '../../lib/licenses/generate-license';
 
 const EXPIRATION_TYPES = [
   { name: 'Never Expires', value: LicenseExpirationType.NEVER },

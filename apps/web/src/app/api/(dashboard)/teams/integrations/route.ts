@@ -1,9 +1,8 @@
-import { logger } from '@/lib/logging/logger';
 import { getSession } from '@/lib/security/session';
 import { getLanguage, getSelectedTeam } from '@/lib/utils/header-helpers';
 import { ErrorResponse } from '@/types/common-api-types';
 import { HttpStatus } from '@/types/http-status';
-import { StripeIntegration } from '@lukittu/prisma';
+import { logger, StripeIntegration } from '@lukittu/prisma';
 import { getTranslations } from 'next-intl/server';
 import { NextRequest, NextResponse } from 'next/server';
 

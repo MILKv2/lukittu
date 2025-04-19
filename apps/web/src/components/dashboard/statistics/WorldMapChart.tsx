@@ -1,3 +1,4 @@
+/* eslint-disable lines-around-comment */
 'use client';
 import {
   IStatisticsMapDataGetResponse,
@@ -324,7 +325,6 @@ function setupProjetionPath() {
 
 function parseWorldTopoJsonToGeoJsonFeatures(): Array<WorldJsonCountryData> {
   const collection = topojson.feature(
-    // eslint-disable-next-line lines-around-comment
     // @ts-expect-error strings in worldJson not recongizable as the enum values declared in library
     worldJson,
     worldJson.objects.countries,

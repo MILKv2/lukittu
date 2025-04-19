@@ -1,11 +1,10 @@
-import { logger } from '@/lib/logging/logger';
 import { loggedResponse } from '@/lib/logging/request-log';
 import { getCloudflareVisitorData } from '@/lib/providers/cloudflare';
 import { getIp } from '@/lib/utils/header-helpers';
 import { VerifyLicenseSchema } from '@/lib/validation/licenses/verify-license-schema';
 import { handleVerify } from '@/lib/verification/verify';
 import { HttpStatus } from '@/types/http-status';
-import { RequestStatus, RequestType } from '@lukittu/prisma';
+import { logger, RequestStatus, RequestType } from '@lukittu/prisma';
 import { NextRequest } from 'next/server';
 
 export async function POST(

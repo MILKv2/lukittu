@@ -1,10 +1,16 @@
-import { Limits, Settings, StripeIntegration, Team } from '@lukittu/prisma';
+import {
+  encryptLicenseKey,
+  generateHMAC,
+  generateUniqueLicense,
+  Limits,
+  logger,
+  Settings,
+  StripeIntegration,
+  Team,
+} from '@lukittu/prisma';
 import { Stripe } from 'stripe';
 import { prismaMock } from '../../../jest.setup';
 import { sendLicenseDistributionEmail } from '../emails/templates/send-license-distribution-email';
-import { generateUniqueLicense } from '../licenses/generate-license';
-import { logger } from '../logging/logger';
-import { encryptLicenseKey, generateHMAC } from '../security/crypto';
 import {
   handleCheckoutSessionCompleted,
   handleInvoicePaid,
@@ -21,23 +27,20 @@ type ExtendedTeam = Team & {
   };
 };
 
-jest.mock('../logging/logger', () => ({
+jest.mock('@lukittu/prisma', () => ({
   __esModule: true,
   logger: {
     info: jest.fn(),
     error: jest.fn(),
   },
-}));
-
-jest.mock('../licenses/generate-license', () => ({
-  __esModule: true,
   generateUniqueLicense: jest.fn(),
-}));
-
-jest.mock('../security/crypto', () => ({
-  __esModule: true,
   encryptLicenseKey: jest.fn(),
   generateHMAC: jest.fn(),
+  regex: {
+    uuidV4: {
+      test: jest.fn(),
+    },
+  },
 }));
 
 jest.mock('../emails/templates/send-license-distribution-email', () => ({

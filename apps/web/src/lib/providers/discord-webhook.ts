@@ -1,4 +1,4 @@
-import { logger } from '@/lib/logging/logger';
+import { logger } from '@lukittu/prisma';
 import 'server-only';
 
 interface DiscordWebhookPayload {

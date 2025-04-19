@@ -1,8 +1,7 @@
 import { DEFAULT_LIMITS } from '@/lib/constants/limits';
-import { prisma } from '@lukittu/prisma';
-import { logger } from '@/lib/logging/logger';
 import { sendDiscordWebhook } from '@/lib/providers/discord-webhook';
 import { HttpStatus } from '@/types/http-status';
+import { logger, prisma } from '@lukittu/prisma';
 import { headers } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';

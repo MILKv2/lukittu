@@ -1,5 +1,4 @@
 import crypto from 'crypto';
-import 'server-only';
 import { logger } from '../logging/logger';
 
 const ENCRYPTION_KEY =

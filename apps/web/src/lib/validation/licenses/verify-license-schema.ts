@@ -1,4 +1,4 @@
-import { regex } from '@/lib/constants/regex';
+import { regex } from '@lukittu/prisma';
 import { z } from 'zod';
 
 export type VerifyLicenseSchema = z.infer<

@@ -1,6 +1,6 @@
 import 'server-only';
 import { inflateRawSync } from 'zlib';
-import { logger } from '../logging/logger';
+import { logger } from '@lukittu/prisma';
 
 interface PluginYaml {
   name: string;

@@ -1,13 +1,5 @@
-import { regex } from '@/lib/constants/regex';
-import { prisma } from '@lukittu/prisma';
-import { LicenseStatus } from '@/lib/licenses/license-status';
+import { LicenseStatus } from '@/lib/licenses/license-badge-variant';
 import { createAuditLog } from '@/lib/logging/audit-log';
-import { logger } from '@/lib/logging/logger';
-import {
-  decryptLicenseKey,
-  encryptLicenseKey,
-  generateHMAC,
-} from '@/lib/security/crypto';
 import { getSession } from '@/lib/security/session';
 import { getLanguage, getSelectedTeam } from '@/lib/utils/header-helpers';
 import {
@@ -20,10 +12,16 @@ import {
   AuditLogAction,
   AuditLogTargetType,
   Customer,
+  decryptLicenseKey,
+  encryptLicenseKey,
+  generateHMAC,
   License,
+  logger,
   Metadata,
+  prisma,
   Prisma,
   Product,
+  regex,
 } from '@lukittu/prisma';
 import { getTranslations } from 'next-intl/server';
 import { NextRequest, NextResponse } from 'next/server';

@@ -17,10 +17,8 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { useTableScroll } from '@/hooks/useTableScroll';
-import {
-  getLicenseStatus,
-  getLicenseStatusBadgeVariant,
-} from '@/lib/licenses/license-status';
+import { getLicenseStatusBadgeVariant } from '@/lib/licenses/license-badge-variant';
+import { getLicenseStatus } from '@lukittu/prisma';
 import { cn } from '@/lib/utils/tailwind-helpers';
 import { LicenseModalProvider } from '@/providers/LicenseModalProvider';
 import { TeamContext } from '@/providers/TeamProvider';

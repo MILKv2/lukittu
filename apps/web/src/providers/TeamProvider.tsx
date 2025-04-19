@@ -1,7 +1,6 @@
 'use client';
 import { ITeamsAcceptInviteResponse } from '@/app/api/(dashboard)/teams/invite/[slug]/route';
-import { regex } from '@/lib/constants/regex';
-import { Limits, Subscription, Team } from '@lukittu/prisma';
+import { Limits, regex, Subscription, Team } from '@lukittu/prisma';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import {

@@ -1,12 +1,10 @@
-import { regex } from '@/lib/constants/regex';
 import { sendLicenseDistributionEmail } from '@/lib/emails/templates/send-license-distribution-email';
-import { logger } from '@/lib/logging/logger';
-import { decryptLicenseKey } from '@/lib/security/crypto';
 import { isRateLimited } from '@/lib/security/rate-limiter';
 import { getSession } from '@/lib/security/session';
 import { getLanguage, getSelectedTeam } from '@/lib/utils/header-helpers';
 import { ErrorResponse } from '@/types/common-api-types';
 import { HttpStatus } from '@/types/http-status';
+import { decryptLicenseKey, logger, regex } from '@lukittu/prisma';
 import { getTranslations } from 'next-intl/server';
 import { NextRequest, NextResponse } from 'next/server';
 

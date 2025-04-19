@@ -1,8 +1,7 @@
 import TeamInviteEmailTemplate from '@/emails/TeamInviteTemplate';
-import { Session, Team } from '@lukittu/prisma';
+import { logger, Session, Team } from '@lukittu/prisma';
 import { render } from '@react-email/components';
 import 'server-only';
-import { logger } from '../../logging/logger';
 import { sendEmail } from '../nodemailer';
 
 interface SendTeamInviteEmailProps {

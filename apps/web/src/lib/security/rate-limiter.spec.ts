@@ -1,5 +1,5 @@
 import { redisClient } from '../database/redis';
-import { logger } from '../logging/logger';
+import { logger } from '@lukittu/prisma';
 import { isRateLimited } from './rate-limiter';
 
 jest.mock('../database/redis', () => ({
@@ -10,7 +10,7 @@ jest.mock('../database/redis', () => ({
   },
 }));
 
-jest.mock('../logging/logger', () => ({
+jest.mock('@lukittu/prisma', () => ({
   logger: {
     error: jest.fn(),
   },

@@ -1,6 +1,5 @@
-import { prisma } from '@lukittu/prisma';
-import { logger } from '@/lib/logging/logger';
 import { HttpStatus } from '@/types/http-status';
+import { logger, prisma } from '@lukittu/prisma';
 import { NextResponse } from 'next/server';
 import 'server-only';
 import Stripe from 'stripe';

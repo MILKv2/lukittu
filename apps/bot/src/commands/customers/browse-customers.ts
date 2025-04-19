@@ -9,10 +9,10 @@ import {
   MessageFlags,
 } from 'discord.js';
 import { Command } from '../../structures/command';
-import { logger } from '../../lib/logging/logger';
+import { logger } from '@lukittu/prisma';
 import { Customer, prisma } from '@lukittu/prisma';
-import { regex } from '../../lib/constants/regex';
-import { decryptLicenseKey, generateHMAC } from '../../lib/security/crypto';
+import { regex } from '@lukittu/prisma/src/constants/regex';
+import { decryptLicenseKey, generateHMAC } from '@lukittu/prisma';
 
 type ExtendedCustomer = Customer & {
   address: {

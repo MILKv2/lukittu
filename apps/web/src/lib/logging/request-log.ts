@@ -1,12 +1,16 @@
 import { HttpStatus } from '@/types/http-status';
-import { RequestMethod, RequestStatus, RequestType } from '@lukittu/prisma';
+import {
+  logger,
+  prisma,
+  RequestMethod,
+  RequestStatus,
+  RequestType,
+} from '@lukittu/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 import 'server-only';
-import { prisma } from '@lukittu/prisma';
 import { getCloudflareVisitorData } from '../providers/cloudflare';
 import { iso2toIso3 } from '../utils/country-helpers';
 import { getIp, getOrigin, getUserAgent } from '../utils/header-helpers';
-import { logger } from './logger';
 
 interface LogRequestProps {
   pathname: string;

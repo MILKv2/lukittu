@@ -1,5 +1,3 @@
-import { prisma } from '@lukittu/prisma';
-import { logger } from '@/lib/logging/logger';
 import {
   deleteFileFromPublicS3,
   uploadFileToPublicS3,
@@ -10,6 +8,7 @@ import { getIp, getLanguage } from '@/lib/utils/header-helpers';
 import { bytesToSize } from '@/lib/utils/number-helpers';
 import { ErrorResponse } from '@/types/common-api-types';
 import { HttpStatus } from '@/types/http-status';
+import { logger, prisma } from '@lukittu/prisma';
 import { randomUUID } from 'crypto';
 import { getTranslations } from 'next-intl/server';
 import { NextRequest, NextResponse } from 'next/server';

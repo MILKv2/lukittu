@@ -1,6 +1,3 @@
-import { prisma } from '@lukittu/prisma';
-import { logger } from '@/lib/logging/logger';
-import { hashPassword, verifyPassword } from '@/lib/security/crypto';
 import { getSession } from '@/lib/security/session';
 import { getLanguage } from '@/lib/utils/header-helpers';
 import {
@@ -9,7 +6,13 @@ import {
 } from '@/lib/validation/profile/change-password-schema';
 import { ErrorResponse } from '@/types/common-api-types';
 import { HttpStatus } from '@/types/http-status';
-import { Provider } from '@lukittu/prisma';
+import {
+  hashPassword,
+  logger,
+  prisma,
+  Provider,
+  verifyPassword,
+} from '@lukittu/prisma';
 import { getTranslations } from 'next-intl/server';
 import { NextRequest, NextResponse } from 'next/server';
 

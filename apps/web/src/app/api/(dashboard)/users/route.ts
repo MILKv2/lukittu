@@ -1,5 +1,3 @@
-import { prisma } from '@lukittu/prisma';
-import { logger } from '@/lib/logging/logger';
 import { getSession } from '@/lib/security/session';
 import { getLanguage } from '@/lib/utils/header-helpers';
 import {
@@ -8,6 +6,7 @@ import {
 } from '@/lib/validation/profile/update-profile-schema';
 import { ErrorResponse } from '@/types/common-api-types';
 import { HttpStatus } from '@/types/http-status';
+import { logger, prisma } from '@lukittu/prisma';
 import { getTranslations } from 'next-intl/server';
 import { NextRequest, NextResponse } from 'next/server';
 

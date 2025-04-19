@@ -1,10 +1,8 @@
-import { prisma } from '@lukittu/prisma';
-import { Prisma } from '@lukittu/prisma';
+import { logger, prisma, Prisma } from '@lukittu/prisma';
 import { randomBytes } from 'crypto';
 import { cookies } from 'next/headers';
 import { cache } from 'react';
 import 'server-only';
-import { logger } from '../logging/logger';
 import { getCloudflareVisitorData } from '../providers/cloudflare';
 import { iso2toIso3 } from '../utils/country-helpers';
 import { getIp, getUserAgent } from '../utils/header-helpers';

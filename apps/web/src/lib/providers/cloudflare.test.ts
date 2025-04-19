@@ -2,7 +2,7 @@ import { headers } from 'next/headers';
 import { getCloudflareVisitorData, verifyTurnstileToken } from './cloudflare';
 
 jest.mock('next/headers');
-jest.mock('../logging/logger', () => ({
+jest.mock('@lukittu/prisma', () => ({
   logger: {
     error: jest.fn(),
   },

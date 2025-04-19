@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+/* eslint-disable lines-around-comment */
 'use strict';
 
 /**
@@ -6,7 +6,6 @@
  * @see {@link https://en.wikipedia.org/wiki/List_of_HTTP_status_codes}
  */
 export enum HttpStatus {
-  // eslint-disable-next-line lines-around-comment
   /**
    * The server has received the request headers and the client should proceed to send the request body
    * (in the case of a request for which a body needs to be sent; for example, a POST request).

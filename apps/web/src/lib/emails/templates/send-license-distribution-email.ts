@@ -3,12 +3,12 @@ import {
   Customer,
   License,
   Limits,
+  logger,
   Product,
   Settings,
   Team,
 } from '@lukittu/prisma';
 import { render } from '@react-email/components';
-import { logger } from '../../logging/logger';
 import { sendEmail } from '../nodemailer';
 
 interface SendLicenseDistributionEmailProps {

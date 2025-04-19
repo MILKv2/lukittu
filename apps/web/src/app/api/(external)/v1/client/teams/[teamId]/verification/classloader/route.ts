@@ -1,10 +1,9 @@
-import { logger } from '@/lib/logging/logger';
 import { loggedResponse, logRequest } from '@/lib/logging/request-log';
 import { getCloudflareVisitorData } from '@/lib/providers/cloudflare';
 import { getIp } from '@/lib/utils/header-helpers';
 import { handleClassloader } from '@/lib/verification/classloader';
 import { HttpStatus } from '@/types/http-status';
-import { RequestStatus, RequestType } from '@lukittu/prisma';
+import { logger, RequestStatus, RequestType } from '@lukittu/prisma';
 import { NextRequest } from 'next/server';
 
 export async function GET(

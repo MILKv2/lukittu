@@ -1,7 +1,5 @@
-import { prisma } from '@lukittu/prisma';
 import { sendTeamInviteEmail } from '@/lib/emails/templates/send-team-invite-email';
 import { createAuditLog } from '@/lib/logging/audit-log';
-import { logger } from '@/lib/logging/logger';
 import { getSession } from '@/lib/security/session';
 import { getLanguage, getSelectedTeam } from '@/lib/utils/header-helpers';
 import {
@@ -10,7 +8,12 @@ import {
 } from '@/lib/validation/team/invite-member-schema';
 import { ErrorResponse } from '@/types/common-api-types';
 import { HttpStatus } from '@/types/http-status';
-import { AuditLogAction, AuditLogTargetType } from '@lukittu/prisma';
+import {
+  AuditLogAction,
+  AuditLogTargetType,
+  logger,
+  prisma,
+} from '@lukittu/prisma';
 import { getTranslations } from 'next-intl/server';
 import { NextRequest, NextResponse } from 'next/server';
 

@@ -1,19 +1,24 @@
 import {
-  ApplicationCommandOptionType,
-  EmbedBuilder,
+  decryptLicenseKey,
+  generateHMAC,
+  getLicenseStatus,
+  License,
+  logger,
+  prisma,
+} from '@lukittu/prisma';
+import { regex } from '@lukittu/prisma/src/constants/regex';
+import {
   ActionRowBuilder,
+  ApplicationCommandOptionType,
   ButtonBuilder,
   ButtonStyle,
-  ComponentType,
-  EmbedField,
   Colors,
+  ComponentType,
+  EmbedBuilder,
+  EmbedField,
   MessageFlags,
 } from 'discord.js';
 import { Command } from '../../structures/command';
-import { logger } from '../../lib/logging/logger';
-import { License, prisma } from '@lukittu/prisma';
-import { decryptLicenseKey, generateHMAC } from '../../lib/security/crypto';
-import { regex } from '../../lib/constants/regex';
 
 type LicenseStatus =
   | 'ACTIVE'
@@ -44,22 +49,21 @@ const STATUS_OPTIONS: StatusOption[] = [
 ];
 
 function getLicenseStatusInfo(license: ExtendedLicense) {
-  if (license.suspended) {
-    return { text: 'Suspended', color: Colors.Red };
-  } else if (
-    license.expirationType !== 'NEVER' &&
-    license.expirationDate &&
-    license.expirationDate < new Date()
-  ) {
-    return { text: 'Expired', color: Colors.Red };
-  } else if (
-    license.lastActiveAt &&
-    new Date(license.lastActiveAt) >
-      new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
-  ) {
-    return { text: 'Active', color: Colors.Green };
-  } else {
-    return { text: 'Inactive', color: Colors.Yellow };
+  const licenseStatus = getLicenseStatus(license);
+
+  switch (licenseStatus) {
+    case 'ACTIVE':
+      return { text: 'Active', color: Colors.Green };
+    case 'INACTIVE':
+      return { text: 'Inactive', color: Colors.Yellow };
+    case 'EXPIRING':
+      return { text: 'Expiring', color: Colors.Orange };
+    case 'EXPIRED':
+      return { text: 'Expired', color: Colors.Red };
+    case 'SUSPENDED':
+      return { text: 'Suspended', color: Colors.Red };
+    default:
+      return { text: 'Unknown', color: Colors.Grey };
   }
 }
 

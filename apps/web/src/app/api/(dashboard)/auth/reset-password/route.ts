@@ -1,6 +1,3 @@
-import { prisma } from '@lukittu/prisma';
-import { logger } from '@/lib/logging/logger';
-import { hashPassword } from '@/lib/security/crypto';
 import { getLanguage } from '@/lib/utils/header-helpers';
 import {
   ResetPasswordSchema,
@@ -9,7 +6,7 @@ import {
 import { ErrorResponse } from '@/types/common-api-types';
 import { HttpStatus } from '@/types/http-status';
 import { JwtTypes } from '@/types/jwt-types-enum';
-import { Provider } from '@lukittu/prisma';
+import { hashPassword, logger, prisma, Provider } from '@lukittu/prisma';
 import jwt from 'jsonwebtoken';
 import { getTranslations } from 'next-intl/server';
 import { NextRequest, NextResponse } from 'next/server';

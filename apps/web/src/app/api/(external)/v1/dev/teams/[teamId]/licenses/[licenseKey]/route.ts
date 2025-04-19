@@ -1,10 +1,7 @@
-import { regex } from '@/lib/constants/regex';
-import { prisma } from '@lukittu/prisma';
-import { logger } from '@/lib/logging/logger';
 import { verifyApiAuthorization } from '@/lib/security/api-key-auth';
-import { generateHMAC } from '@/lib/security/crypto';
 import { IExternalDevResponse } from '@/types/common-api-types';
 import { HttpStatus } from '@/types/http-status';
+import { generateHMAC, logger, prisma, regex } from '@lukittu/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(

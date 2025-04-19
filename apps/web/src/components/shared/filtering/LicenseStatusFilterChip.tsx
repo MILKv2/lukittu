@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { LicenseStatus } from '@/lib/licenses/license-status';
+import { LicenseStatus } from '@/lib/licenses/license-badge-variant';
 import {
   AlertTriangle,
   Ban,

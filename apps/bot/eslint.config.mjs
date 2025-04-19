@@ -1,6 +1,6 @@
-import eslint from '@eslint/js'
-import tseslint from 'typescript-eslint'
-import eslintConfigPrettier from 'eslint-config-prettier'
+import eslint from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import eslintConfigPrettier from 'eslint-config-prettier';
 
 export default tseslint.config({
   files: ['**/*.ts'],
@@ -11,10 +11,10 @@ export default tseslint.config({
     ...tseslint.configs.stylistic,
     eslintConfigPrettier,
     {
-        rules: {
-            'no-console': 'error',
-        }
-    }
+      rules: {
+        'no-console': 'error',
+      },
+    },
   ],
   languageOptions: {
     ecmaVersion: 'latest',
@@ -23,4 +23,4 @@ export default tseslint.config({
       tsconfigRootDir: import.meta.dirname,
     },
   },
-})
+});

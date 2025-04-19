@@ -12,7 +12,7 @@ import * as path from 'path';
 import { Command } from './structures/command';
 import { REST } from '@discordjs/rest';
 import { DiscordAccount, Limits, prisma, Team, User } from '@lukittu/prisma';
-import { logger } from './lib/logging/logger';
+import { logger } from '@lukittu/prisma';
 
 export type LinkedDiscordAccount = DiscordAccount & {
   user: Omit<User, 'passwordHash'> & {

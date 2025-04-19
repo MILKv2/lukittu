@@ -1,4 +1,4 @@
-import { logger } from '@/lib/logging/logger';
+import { logger } from '@lukittu/prisma';
 import { getSession } from '@/lib/security/session';
 import { getLanguage, getSelectedTeam } from '@/lib/utils/header-helpers';
 import { ErrorResponse } from '@/types/common-api-types';

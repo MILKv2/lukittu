@@ -1,5 +1,4 @@
-import { prisma } from '@lukittu/prisma';
-import { BlacklistType, License, RequestStatus } from '@lukittu/prisma';
+import { BlacklistType, License, prisma, RequestStatus } from '@lukittu/prisma';
 import { iso2toIso3 } from '../../utils/country-helpers';
 
 class SharedVerificationHandler {

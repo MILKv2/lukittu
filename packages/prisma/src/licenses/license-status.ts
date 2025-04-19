@@ -1,6 +1,4 @@
-import { badgeVariants } from '@/components/ui/badge';
-import { License } from '@lukittu/prisma';
-import { VariantProps } from 'class-variance-authority';
+import { License } from '../../';
 
 export type LicenseStatus =
   | 'ACTIVE'
@@ -77,23 +75,4 @@ export const getLicenseStatus = (
   }
 
   return 'ACTIVE';
-};
-
-type Variant = VariantProps<typeof badgeVariants>['variant'];
-
-export const getLicenseStatusBadgeVariant = (
-  status: LicenseStatus,
-): Variant => {
-  switch (status) {
-    case 'ACTIVE':
-      return 'success';
-    case 'INACTIVE':
-      return 'secondary';
-    case 'EXPIRING':
-      return 'warning';
-    case 'EXPIRED':
-      return 'error';
-    case 'SUSPENDED':
-      return 'error';
-  }
 };

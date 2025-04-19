@@ -1,8 +1,5 @@
-import { License } from '@lukittu/prisma';
-import {
-  getLicenseStatus,
-  getLicenseStatusBadgeVariant,
-} from './license-status';
+import { License } from '../../generated/client';
+import { getLicenseStatus } from './license-status';
 
 const createBaseLicense = (
   override: Partial<License> = {},
@@ -56,15 +53,5 @@ describe('getLicenseStatus', () => {
       lastActiveAt: new Date(),
     });
     expect(getLicenseStatus(license)).toBe('EXPIRING');
-  });
-});
-
-describe('getLicenseStatusBadgeVariant', () => {
-  test('returns correct badge variants for each status', () => {
-    expect(getLicenseStatusBadgeVariant('ACTIVE')).toBe('success');
-    expect(getLicenseStatusBadgeVariant('INACTIVE')).toBe('secondary');
-    expect(getLicenseStatusBadgeVariant('EXPIRING')).toBe('warning');
-    expect(getLicenseStatusBadgeVariant('EXPIRED')).toBe('error');
-    expect(getLicenseStatusBadgeVariant('SUSPENDED')).toBe('error');
   });
 });

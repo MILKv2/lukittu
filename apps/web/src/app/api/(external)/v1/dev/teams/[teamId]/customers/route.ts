@@ -1,6 +1,4 @@
-import { prisma } from '@lukittu/prisma';
 import { createAuditLog } from '@/lib/logging/audit-log';
-import { logger } from '@/lib/logging/logger';
 import { verifyApiAuthorization } from '@/lib/security/api-key-auth';
 import {
   SetCustomerSchema,
@@ -8,7 +6,12 @@ import {
 } from '@/lib/validation/customers/set-customer-schema';
 import { IExternalDevResponse } from '@/types/common-api-types';
 import { HttpStatus } from '@/types/http-status';
-import { AuditLogAction, AuditLogTargetType } from '@lukittu/prisma';
+import {
+  AuditLogAction,
+  AuditLogTargetType,
+  logger,
+  prisma,
+} from '@lukittu/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(

@@ -1,15 +1,6 @@
-import { regex } from '@/lib/constants/regex';
-import { prisma } from '@lukittu/prisma';
 import { sendLicenseDistributionEmail } from '@/lib/emails/templates/send-license-distribution-email';
-import { generateUniqueLicense } from '@/lib/licenses/generate-license';
 import { createAuditLog } from '@/lib/logging/audit-log';
-import { logger } from '@/lib/logging/logger';
 import { verifyApiAuthorization } from '@/lib/security/api-key-auth';
-import {
-  decryptLicenseKey,
-  encryptLicenseKey,
-  generateHMAC,
-} from '@/lib/security/crypto';
 import { isRateLimited } from '@/lib/security/rate-limiter';
 import {
   CreateLicenseSchema,
@@ -17,7 +8,18 @@ import {
 } from '@/lib/validation/licenses/set-license-schema';
 import { IExternalDevResponse } from '@/types/common-api-types';
 import { HttpStatus } from '@/types/http-status';
-import { AuditLogAction, AuditLogTargetType, Prisma } from '@lukittu/prisma';
+import {
+  AuditLogAction,
+  AuditLogTargetType,
+  decryptLicenseKey,
+  encryptLicenseKey,
+  generateHMAC,
+  generateUniqueLicense,
+  logger,
+  prisma,
+  Prisma,
+  regex,
+} from '@lukittu/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(

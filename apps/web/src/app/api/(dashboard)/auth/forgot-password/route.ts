@@ -1,6 +1,4 @@
-import { prisma } from '@lukittu/prisma';
 import { sendResetPasswordEmail } from '@/lib/emails/templates/send-forgot-password-email';
-import { logger } from '@/lib/logging/logger';
 import { isRateLimited } from '@/lib/security/rate-limiter';
 import { getIp, getLanguage } from '@/lib/utils/header-helpers';
 import {
@@ -10,7 +8,7 @@ import {
 import { ErrorResponse } from '@/types/common-api-types';
 import { HttpStatus } from '@/types/http-status';
 import { JwtTypes } from '@/types/jwt-types-enum';
-import { Provider } from '@lukittu/prisma';
+import { logger, prisma, Provider } from '@lukittu/prisma';
 import jwt from 'jsonwebtoken';
 import { getTranslations } from 'next-intl/server';
 import { NextRequest, NextResponse } from 'next/server';

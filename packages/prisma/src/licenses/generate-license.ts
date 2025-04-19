@@ -1,4 +1,4 @@
-import { prisma } from '@lukittu/prisma';
+import { prisma } from '../../';
 import { generateHMAC } from '../security/crypto';
 
 const generateRandomString = (length: number): string => {
@@ -14,7 +14,6 @@ const generateRandomString = (length: number): string => {
 };
 
 const formatLicenseKey = (key: string): string =>
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   key.match(/.{1,5}/g)!.join('-');
 
 const generateLicenseKey = (): string => {

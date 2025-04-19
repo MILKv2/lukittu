@@ -1,4 +1,3 @@
-import { logger } from '@/lib/logging/logger';
 import {
   IExternalVerificationResponse,
   loggedResponse,
@@ -8,7 +7,7 @@ import { getIp } from '@/lib/utils/header-helpers';
 import { LicenseHeartbeatSchema } from '@/lib/validation/licenses/license-heartbeat-schema';
 import { handleHeartbeat } from '@/lib/verification/heartbeat';
 import { HttpStatus } from '@/types/http-status';
-import { RequestStatus, RequestType } from '@lukittu/prisma';
+import { logger, RequestStatus, RequestType } from '@lukittu/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(

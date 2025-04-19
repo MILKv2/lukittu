@@ -1,9 +1,6 @@
-import { prisma } from '@lukittu/prisma';
 import { sendVerifyEmailEmail } from '@/lib/emails/templates/send-verify-email-email';
-import { logger } from '@/lib/logging/logger';
 import { verifyTurnstileToken } from '@/lib/providers/cloudflare';
 import { sendDiscordWebhook } from '@/lib/providers/discord-webhook';
-import { generateKeyPair, hashPassword } from '@/lib/security/crypto';
 import { isRateLimited } from '@/lib/security/rate-limiter';
 import { getIp, getLanguage } from '@/lib/utils/header-helpers';
 import {
@@ -13,7 +10,13 @@ import {
 import { ErrorResponse } from '@/types/common-api-types';
 import { HttpStatus } from '@/types/http-status';
 import { JwtTypes } from '@/types/jwt-types-enum';
-import { Provider } from '@lukittu/prisma';
+import {
+  generateKeyPair,
+  hashPassword,
+  logger,
+  prisma,
+  Provider,
+} from '@lukittu/prisma';
 import jwt from 'jsonwebtoken';
 import { getTranslations } from 'next-intl/server';
 import { NextRequest, NextResponse } from 'next/server';

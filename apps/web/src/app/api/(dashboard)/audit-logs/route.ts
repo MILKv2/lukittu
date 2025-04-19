@@ -1,11 +1,9 @@
-import { prisma } from '@lukittu/prisma';
-import { logger } from '@/lib/logging/logger';
 import { getSession } from '@/lib/security/session';
 import { iso3toIso2, iso3ToName } from '@/lib/utils/country-helpers';
 import { getLanguage, getSelectedTeam } from '@/lib/utils/header-helpers';
 import { ErrorResponse } from '@/types/common-api-types';
 import { HttpStatus } from '@/types/http-status';
-import { AuditLog, Prisma, User } from '@lukittu/prisma';
+import { AuditLog, logger, prisma, Prisma, User } from '@lukittu/prisma';
 import { getTranslations } from 'next-intl/server';
 import { NextRequest, NextResponse } from 'next/server';
 import { UAParser } from 'ua-parser-js';

@@ -1,12 +1,11 @@
-import { logger } from '@/lib/logging/logger';
 import { getSession } from '@/lib/security/session';
 import { getLanguage } from '@/lib/utils/header-helpers';
-import { HttpStatus } from '@/types/http-status';
-import { getTranslations } from 'next-intl/server';
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@lukittu/prisma';
 import { ErrorResponse } from '@/types/common-api-types';
+import { HttpStatus } from '@/types/http-status';
+import { logger, prisma } from '@lukittu/prisma';
+import { getTranslations } from 'next-intl/server';
 import { cookies } from 'next/headers';
+import { NextRequest, NextResponse } from 'next/server';
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL!;
 
