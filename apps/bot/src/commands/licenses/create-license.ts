@@ -1962,20 +1962,17 @@ async function finalizeLicenseCreation(
       components: [finalRow],
     });
   } catch (error) {
-    const errorId = Math.random().toString(36).substring(2, 8);
-    logger.error(`Error ID ${errorId} - Error creating license:`, error);
+    logger.error('Error creating license:', error);
 
     try {
       await interaction.editReply({
-        content: `An error occurred while creating the license. Please try again later. (Error ID: ${errorId})`,
+        content:
+          'An error occurred while creating the license. Please try again later.',
         embeds: [],
         components: [],
       });
     } catch (secondError) {
-      logger.error(
-        `Error ID ${errorId} - Failed to send error response:`,
-        secondError,
-      );
+      logger.error('Failed to send error response:', secondError);
     }
   }
 }
@@ -1988,11 +1985,10 @@ async function handleWizardError(
   error: unknown,
   context: string,
 ) {
-  const errorId = Math.random().toString(36).substring(2, 8);
-  logger.error(`Error ID ${errorId} - Error ${context}:`, error);
+  logger.error(`Error ${context}:`, error);
 
   try {
-    const errorMessage = `An error occurred while ${context}. Please try again. (Error ID: ${errorId})`;
+    const errorMessage = `An error occurred while ${context}. Please try again.`;
 
     if (!interaction.replied && !interaction.deferred) {
       await interaction.reply({
@@ -2006,10 +2002,7 @@ async function handleWizardError(
       });
     }
   } catch (followupError) {
-    logger.error(
-      `Error ID ${errorId} - Failed to send error response:`,
-      followupError,
-    );
+    logger.error('Failed to send error response:', followupError);
   }
 }
 
