@@ -1,18 +1,8 @@
 import { cookies } from 'next/headers';
-import prisma from '../../lib/database/prisma';
 import { getCloudflareVisitorData } from '../providers/cloudflare';
 import { getIp, getUserAgent } from '../utils/header-helpers';
 import { createSession, getSession } from './session';
-
-jest.mock('../../lib/database/prisma', () => ({
-  __esModule: true,
-  default: {
-    session: {
-      create: jest.fn(),
-      findUnique: jest.fn(),
-    },
-  },
-}));
+import { prismaMock } from '../../../jest.setup';
 
 jest.mock('next/headers', () => ({
   cookies: jest.fn(),
@@ -53,12 +43,12 @@ describe('Session Management', () => {
         userAgent: 'test-agent',
       };
 
-      (prisma.session.create as jest.Mock).mockResolvedValue(mockSession);
+      (prismaMock.session.create as jest.Mock).mockResolvedValue(mockSession);
 
       const result = await createSession('test-user', false);
 
       expect(result).toEqual(mockSession);
-      expect(prisma.session.create).toHaveBeenCalledWith({
+      expect(prismaMock.session.create).toHaveBeenCalledWith({
         data: expect.objectContaining({
           userId: 'test-user',
           ipAddress: '127.0.0.1',
@@ -69,7 +59,7 @@ describe('Session Management', () => {
     });
 
     it('should handle errors and return null', async () => {
-      (prisma.session.create as jest.Mock).mockRejectedValue(
+      (prismaMock.session.create as jest.Mock).mockRejectedValue(
         new Error('DB Error'),
       );
 
@@ -86,7 +76,7 @@ describe('Session Management', () => {
       const result = await getSession();
 
       expect(result).toBeNull();
-      expect(prisma.session.findUnique).not.toHaveBeenCalled();
+      expect(prismaMock.session.findUnique).not.toHaveBeenCalled();
     });
 
     it('should return session if valid', async () => {
@@ -98,7 +88,9 @@ describe('Session Management', () => {
       };
 
       mockCookieStore.get.mockReturnValue({ value: 'test-session' });
-      (prisma.session.findUnique as jest.Mock).mockResolvedValue(mockSession);
+      (prismaMock.session.findUnique as jest.Mock).mockResolvedValue(
+        mockSession,
+      );
 
       const result = await getSession();
 
@@ -106,7 +98,7 @@ describe('Session Management', () => {
         ...mockSession,
         sessionId: 'test-session',
       });
-      expect(prisma.session.findUnique).toHaveBeenCalledWith({
+      expect(prismaMock.session.findUnique).toHaveBeenCalledWith({
         where: {
           sessionId: 'test-session',
           expiresAt: {
