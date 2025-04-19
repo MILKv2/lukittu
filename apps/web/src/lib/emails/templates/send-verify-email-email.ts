@@ -1,5 +1,5 @@
 import VerifyEmailTemplate from '@/emails/VerifyEmailTemplate';
-import { logger, User } from '@lukittu/prisma';
+import { logger, User } from '@lukittu/shared';
 import { render } from '@react-email/components';
 import 'server-only';
 import { sendEmail } from '../nodemailer';

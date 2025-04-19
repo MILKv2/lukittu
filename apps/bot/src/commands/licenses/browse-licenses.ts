@@ -5,8 +5,8 @@ import {
   License,
   logger,
   prisma,
-} from '@lukittu/prisma';
-import { regex } from '@lukittu/prisma/src/constants/regex';
+} from '@lukittu/shared';
+import { regex } from '@lukittu/shared/src/constants/regex';
 import {
   ActionRowBuilder,
   ApplicationCommandOptionType,

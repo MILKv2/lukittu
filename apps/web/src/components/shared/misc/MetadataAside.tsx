@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Metadata } from '@lukittu/prisma';
+import { Metadata } from '@lukittu/shared';
 import { useTranslations } from 'next-intl';
 
 interface MetadataAsideProps {

@@ -1,5 +1,5 @@
 import { HttpStatus } from '@/types/http-status';
-import { logger, prisma } from '@lukittu/prisma';
+import { logger, prisma } from '@lukittu/shared';
 import { NextResponse } from 'next/server';
 import 'server-only';
 import Stripe from 'stripe';

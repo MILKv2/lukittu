@@ -1,5 +1,5 @@
+import { logger } from '@lukittu/shared';
 import { redisClient } from '../database/redis';
-import { logger } from '@lukittu/prisma';
 import { isRateLimited } from './rate-limiter';
 
 jest.mock('../database/redis', () => ({
@@ -10,7 +10,7 @@ jest.mock('../database/redis', () => ({
   },
 }));
 
-jest.mock('@lukittu/prisma', () => ({
+jest.mock('@lukittu/shared', () => ({
   logger: {
     error: jest.fn(),
   },

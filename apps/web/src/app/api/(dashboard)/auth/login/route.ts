@@ -5,7 +5,7 @@ import { getIp, getLanguage } from '@/lib/utils/header-helpers';
 import { loginSchema, LoginSchema } from '@/lib/validation/auth/login-schema';
 import { ErrorResponse } from '@/types/common-api-types';
 import { HttpStatus } from '@/types/http-status';
-import { logger, prisma, Provider, verifyPassword } from '@lukittu/prisma';
+import { logger, prisma, Provider, verifyPassword } from '@lukittu/shared';
 import { getTranslations } from 'next-intl/server';
 import { NextRequest, NextResponse } from 'next/server';
 

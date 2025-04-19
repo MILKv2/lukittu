@@ -18,7 +18,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils/tailwind-helpers';
 import { getInitials } from '@/lib/utils/text-helpers';
 import { TeamContext } from '@/providers/TeamProvider';
-import { Team } from '@lukittu/prisma';
+import { Team } from '@lukittu/shared';
 import { CommandList } from 'cmdk';
 import { Check, ChevronsUpDown, Users } from 'lucide-react';
 import { useTranslations } from 'next-intl';

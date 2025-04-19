@@ -4,7 +4,7 @@ import { getIp } from '@/lib/utils/header-helpers';
 import { VerifyLicenseSchema } from '@/lib/validation/licenses/verify-license-schema';
 import { handleVerify } from '@/lib/verification/verify';
 import { HttpStatus } from '@/types/http-status';
-import { logger, RequestStatus, RequestType } from '@lukittu/prisma';
+import { logger, RequestStatus, RequestType } from '@lukittu/shared';
 import { NextRequest } from 'next/server';
 
 export async function POST(

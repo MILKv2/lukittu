@@ -1,4 +1,4 @@
-import { Limits, logger, prisma, regex, Team } from '@lukittu/prisma';
+import { Limits, logger, prisma, regex, Team } from '@lukittu/shared';
 import crypto from 'crypto';
 import { headers } from 'next/headers';
 import 'server-only';

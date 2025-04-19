@@ -10,7 +10,7 @@ import {
   Subscription,
   Team,
   User,
-} from '@lukittu/prisma';
+} from '@lukittu/shared';
 import { getTranslations } from 'next-intl/server';
 import { NextResponse } from 'next/server';
 

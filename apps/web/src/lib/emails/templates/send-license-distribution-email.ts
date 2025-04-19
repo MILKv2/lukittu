@@ -7,7 +7,7 @@ import {
   Product,
   Settings,
   Team,
-} from '@lukittu/prisma';
+} from '@lukittu/shared';
 import { render } from '@react-email/components';
 import { sendEmail } from '../nodemailer';
 

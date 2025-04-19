@@ -19,7 +19,7 @@ import {
   prisma,
   Prisma,
   regex,
-} from '@lukittu/prisma';
+} from '@lukittu/shared';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(

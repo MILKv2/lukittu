@@ -1,6 +1,6 @@
 import { sendDiscordWebhook } from '@/lib/providers/discord-webhook';
 import { createSession } from '@/lib/security/session';
-import { generateKeyPair, logger, prisma, Provider } from '@lukittu/prisma';
+import { generateKeyPair, logger, prisma, Provider } from '@lukittu/shared';
 import { NextRequest, NextResponse } from 'next/server';
 
 interface IGoogleAuthenticationResponse {

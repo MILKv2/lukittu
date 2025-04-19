@@ -8,8 +8,8 @@ import {
   S3Client,
 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
+import { logger } from '@lukittu/shared';
 import 'server-only';
-import { logger } from '@lukittu/prisma';
 
 const publicS3Client = new S3Client({
   endpoint: process.env.PUBLIC_OBJECT_STORAGE_ENDPOINT,

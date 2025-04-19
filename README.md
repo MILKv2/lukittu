@@ -81,7 +81,7 @@ This command will spin up the containers for both PostgreSQL and Redis.
 Run the necessary database migrations to set up your database schema:
 
 ```bash
-pnpm --filter @lukittu/prisma migrate
+pnpm --filter @lukittu/shared migrate
 ```
 
 #### 6. Start the Application
@@ -101,7 +101,7 @@ To run commands for a specific workspace, use the `--filter` flag:
 pnpm --filter lukittu-web dev
 
 # Generate Prisma client
-pnpm --filter @lukittu/prisma generate
+pnpm --filter @lukittu/shared generate
 ```
 
 #### 7. Access the Application

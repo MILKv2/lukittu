@@ -1,8 +1,8 @@
-import { logger } from '@lukittu/prisma';
 import { getSession } from '@/lib/security/session';
 import { getLanguage, getSelectedTeam } from '@/lib/utils/header-helpers';
 import { ErrorResponse } from '@/types/common-api-types';
 import { HttpStatus } from '@/types/http-status';
+import { logger } from '@lukittu/shared';
 import { randomUUID } from 'crypto';
 import { getTranslations } from 'next-intl/server';
 import { NextResponse } from 'next/server';

@@ -1,8 +1,8 @@
 import { countries } from '@/lib/constants/countries';
-import { BlacklistType } from '@lukittu/prisma';
+import { I18nTranslator } from '@/types/i18n-types';
+import { BlacklistType } from '@lukittu/shared';
 import { z } from 'zod';
 import { metadataSchema } from '../shared/metadata-schema';
-import { I18nTranslator } from '@/types/i18n-types';
 
 export type SetBlacklistSchema = z.infer<ReturnType<typeof setBlacklistSchema>>;
 

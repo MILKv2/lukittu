@@ -4,7 +4,7 @@ import {
 } from '@/app/api/(dashboard)/licenses/route';
 import { MultiSelect } from '@/components/ui/multi-select';
 import { TeamContext } from '@/providers/TeamProvider';
-import { License } from '@lukittu/prisma';
+import { License } from '@lukittu/shared';
 import { useTranslations } from 'next-intl';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';

@@ -1,7 +1,7 @@
 'use client';
 import { DeleteBlacklistConfirmModal } from '@/components/dashboard/blacklist/BlacklistDeleteConfirmModal';
 import SetBlacklistModal from '@/components/dashboard/blacklist/SetBlacklistModal';
-import { Blacklist, Metadata } from '@lukittu/prisma';
+import { Blacklist, Metadata } from '@lukittu/shared';
 import { createContext, useState } from 'react';
 
 type BlacklistExtended = Blacklist & {

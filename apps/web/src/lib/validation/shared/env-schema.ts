@@ -1,4 +1,4 @@
-import { logger } from '@lukittu/prisma';
+import { logger } from '@lukittu/shared';
 import { z } from 'zod';
 
 /**

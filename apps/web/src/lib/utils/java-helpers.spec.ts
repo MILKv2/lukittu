@@ -1,9 +1,9 @@
+import { logger } from '@lukittu/shared';
 import { Buffer } from 'buffer';
 import { deflateRawSync } from 'zlib';
-import { logger } from '@lukittu/prisma';
 import { getMainClassFromJar } from './java-helpers';
 
-jest.mock('@lukittu/prisma', () => ({
+jest.mock('@lukittu/shared', () => ({
   logger: {
     error: jest.fn(),
   },

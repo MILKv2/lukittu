@@ -4,7 +4,7 @@ import {
   ResponsiveDialogHeader,
   ResponsiveDialogTitle,
 } from '@/components/ui/responsive-dialog';
-import { AuditLog } from '@lukittu/prisma';
+import { AuditLog } from '@lukittu/shared';
 import { useTranslations } from 'next-intl';
 
 interface AuditLogRequestModalProps {

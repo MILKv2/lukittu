@@ -1,10 +1,10 @@
-import { logger } from '@lukittu/prisma';
 import {
   handleInvoicePaid,
   handleSubscriptionDeleted,
   handleSubscriptionUpdated,
 } from '@/lib/providers/stripe-internal';
 import { HttpStatus } from '@/types/http-status';
+import { logger } from '@lukittu/shared';
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 

@@ -25,7 +25,7 @@ import { useTableScroll } from '@/hooks/useTableScroll';
 import { cn } from '@/lib/utils/tailwind-helpers';
 import { BlacklistModalProvider } from '@/providers/BlacklistModalProvider';
 import { TeamContext } from '@/providers/TeamProvider';
-import { BlacklistType } from '@lukittu/prisma';
+import { BlacklistType } from '@lukittu/shared';
 import {
   ArrowDownUp,
   Ban,

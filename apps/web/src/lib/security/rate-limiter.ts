@@ -1,6 +1,6 @@
+import { logger } from '@lukittu/shared';
 import 'server-only';
 import { redisClient } from '../database/redis';
-import { logger } from '@lukittu/prisma';
 
 export async function isRateLimited(
   key: string,

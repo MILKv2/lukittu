@@ -2,7 +2,7 @@
 import { IProductsReleasesSetLatestResponse } from '@/app/api/(dashboard)/products/releases/set-latest/route';
 import SetReleaseModal from '@/components/dashboard/releases/list/SetReleaseModal';
 import { DeleteDeleteConfirmModal } from '@/components/dashboard/releases/ReleaseDeleteConfirmModal';
-import { License, Metadata, Release, ReleaseFile } from '@lukittu/prisma';
+import { License, Metadata, Release, ReleaseFile } from '@lukittu/shared';
 import { createContext, useState } from 'react';
 
 type ReleaseExtended = Release & {

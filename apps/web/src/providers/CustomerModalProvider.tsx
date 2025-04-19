@@ -1,7 +1,7 @@
 'use client';
 import { DeleteCustomerConfirmModal } from '@/components/dashboard/customers/CustomerDeleteConfirmModal';
 import SetCustomerModal from '@/components/dashboard/customers/list/SetCustomerModal';
-import { Address, Customer, Metadata } from '@lukittu/prisma';
+import { Address, Customer, Metadata } from '@lukittu/shared';
 import { createContext, useState } from 'react';
 
 type CustomerExtended = Customer & {

@@ -8,7 +8,7 @@ import { getIp, getLanguage } from '@/lib/utils/header-helpers';
 import { bytesToSize } from '@/lib/utils/number-helpers';
 import { ErrorResponse } from '@/types/common-api-types';
 import { HttpStatus } from '@/types/http-status';
-import { logger, prisma } from '@lukittu/prisma';
+import { logger, prisma } from '@lukittu/shared';
 import { randomUUID } from 'crypto';
 import { getTranslations } from 'next-intl/server';
 import { NextRequest, NextResponse } from 'next/server';

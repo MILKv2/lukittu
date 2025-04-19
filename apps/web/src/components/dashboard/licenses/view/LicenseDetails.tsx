@@ -11,7 +11,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { getLicenseStatusBadgeVariant } from '@/lib/licenses/license-badge-variant';
-import { getLicenseStatus } from '@lukittu/prisma';
+import { getLicenseStatus } from '@lukittu/shared';
 import { CheckCircle, Copy, Infinity, User, XCircle } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';

@@ -1,7 +1,7 @@
 'use client';
 import { DeleteProductConfirmModal } from '@/components/dashboard/products/ProductDeleteConfirmModal';
 import SetProductModal from '@/components/dashboard/products/list/SetProductModal';
-import { Metadata, Product } from '@lukittu/prisma';
+import { Metadata, Product } from '@lukittu/shared';
 import { createContext, useState } from 'react';
 
 type ProductExtended = Product & {

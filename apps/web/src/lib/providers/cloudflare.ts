@@ -1,6 +1,6 @@
+import { logger } from '@lukittu/shared';
 import { headers } from 'next/headers';
 import 'server-only';
-import { logger } from '@lukittu/prisma';
 import { iso2toIso3 } from '../utils/country-helpers';
 
 export const verifyTurnstileToken = async (token: string): Promise<boolean> => {

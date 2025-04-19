@@ -1,18 +1,22 @@
 import {
-  ApplicationCommandOptionType,
-  EmbedBuilder,
+  Customer,
+  decryptLicenseKey,
+  generateHMAC,
+  logger,
+  prisma,
+} from '@lukittu/shared';
+import { regex } from '@lukittu/shared/src/constants/regex';
+import {
   ActionRowBuilder,
+  ApplicationCommandOptionType,
   ButtonBuilder,
   ButtonStyle,
-  ComponentType,
   Colors,
+  ComponentType,
+  EmbedBuilder,
   MessageFlags,
 } from 'discord.js';
 import { Command } from '../../structures/command';
-import { logger } from '@lukittu/prisma';
-import { Customer, prisma } from '@lukittu/prisma';
-import { regex } from '@lukittu/prisma/src/constants/regex';
-import { decryptLicenseKey, generateHMAC } from '@lukittu/prisma';
 
 type ExtendedCustomer = Customer & {
   address: {

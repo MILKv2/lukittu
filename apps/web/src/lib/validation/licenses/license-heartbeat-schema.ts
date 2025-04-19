@@ -1,4 +1,4 @@
-import { regex } from '@lukittu/prisma';
+import { regex } from '@lukittu/shared';
 import { z } from 'zod';
 
 export type LicenseHeartbeatSchema = z.infer<

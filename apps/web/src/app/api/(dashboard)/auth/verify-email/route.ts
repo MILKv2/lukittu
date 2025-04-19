@@ -7,7 +7,7 @@ import {
 import { ErrorResponse } from '@/types/common-api-types';
 import { HttpStatus } from '@/types/http-status';
 import { JwtTypes } from '@/types/jwt-types-enum';
-import { logger, prisma, Provider } from '@lukittu/prisma';
+import { logger, prisma, Provider } from '@lukittu/shared';
 import jwt from 'jsonwebtoken';
 import { getTranslations } from 'next-intl/server';
 import { NextRequest, NextResponse } from 'next/server';

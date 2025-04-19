@@ -6,7 +6,7 @@ import {
 } from '@/lib/validation/profile/update-profile-schema';
 import { ErrorResponse } from '@/types/common-api-types';
 import { HttpStatus } from '@/types/http-status';
-import { logger, prisma } from '@lukittu/prisma';
+import { logger, prisma } from '@lukittu/shared';
 import { getTranslations } from 'next-intl/server';
 import { NextRequest, NextResponse } from 'next/server';
 

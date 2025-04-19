@@ -7,7 +7,7 @@ import {
   ResponsiveDialogHeader,
   ResponsiveDialogTitle,
 } from '@/components/ui/responsive-dialog';
-import { Team } from '@lukittu/prisma';
+import { Team } from '@lukittu/shared';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 

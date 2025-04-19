@@ -9,7 +9,7 @@ import {
   Settings,
   StripeIntegration,
   Team,
-} from '@lukittu/prisma';
+} from '@lukittu/shared';
 import 'server-only';
 import Stripe from 'stripe';
 import { sendLicenseDistributionEmail } from '../emails/templates/send-license-distribution-email';

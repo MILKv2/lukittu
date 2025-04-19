@@ -16,7 +16,7 @@ import {
   logger,
   prisma,
   Provider,
-} from '@lukittu/prisma';
+} from '@lukittu/shared';
 import jwt from 'jsonwebtoken';
 import { getTranslations } from 'next-intl/server';
 import { NextRequest, NextResponse } from 'next/server';

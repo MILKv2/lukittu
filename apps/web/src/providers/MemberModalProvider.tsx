@@ -2,7 +2,7 @@
 import { CancelInviteConfirmModal } from '@/components/dashboard/members/CancelInviteConfirmModal';
 import { KickMemberConfirmModal } from '@/components/dashboard/members/KickMemberConfirmModal';
 import InviteMemberModal from '@/components/dashboard/members/list/InviteMemberModal';
-import { User } from '@lukittu/prisma';
+import { User } from '@lukittu/shared';
 import { createContext, useState } from 'react';
 
 export const MemberModalContext = createContext({

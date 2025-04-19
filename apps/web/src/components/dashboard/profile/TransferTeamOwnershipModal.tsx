@@ -23,7 +23,7 @@ import {
   ResponsiveDialogTitle,
 } from '@/components/ui/responsive-dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Team } from '@lukittu/prisma';
+import { Team } from '@lukittu/shared';
 import { ChevronsUpDown } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';

@@ -7,10 +7,10 @@
   },
   "private": true,
   "scripts": {
-    "dev": "pnpm --filter @lukittu/prisma generate && pnpm -r dev",
+    "dev": "pnpm --filter @lukittu/shared generate && pnpm -r dev",
     "format": "prettier --write .",
-    "db:migrate": "pnpm --filter @lukittu/prisma migrate",
-    "db:deploy": "pnpm --filter @lukittu/prisma docker-deploy",
+    "db:migrate": "pnpm --filter @lukittu/shared migrate",
+    "db:deploy": "pnpm --filter @lukittu/shared docker-deploy",
     "build:next": "pnpm --filter lukittu-web build"
   },
   "devDependencies": {

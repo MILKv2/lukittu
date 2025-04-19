@@ -1,6 +1,6 @@
+import { regex } from '@lukittu/shared';
 import { cookies, headers } from 'next/headers';
 import 'server-only';
-import { regex } from '@lukittu/prisma';
 
 /**
  * Get the IP address from the headers

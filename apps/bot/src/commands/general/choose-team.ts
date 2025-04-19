@@ -1,8 +1,7 @@
+import { logger, prisma } from '@lukittu/shared';
+import { regex } from '@lukittu/shared/src/constants/regex';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Command } from '../../structures/command';
-import { logger } from '@lukittu/prisma';
-import { prisma } from '@lukittu/prisma';
-import { regex } from '@lukittu/prisma/src/constants/regex';
 
 export default Command({
   data: {

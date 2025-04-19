@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { LicenseModalContext } from '@/providers/LicenseModalProvider';
-import { Customer, License, Metadata, Product } from '@lukittu/prisma';
+import { Customer, License, Metadata, Product } from '@lukittu/shared';
 import { VariantProps } from 'class-variance-authority';
 import { Copy, Edit, Ellipsis, Send, Trash } from 'lucide-react';
 import { useTranslations } from 'next-intl';

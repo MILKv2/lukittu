@@ -36,10 +36,10 @@ import {
   getLicenseStatusBadgeVariant,
   LicenseStatus,
 } from '@/lib/licenses/license-badge-variant';
-import { getLicenseStatus } from '@lukittu/prisma';
 import { cn } from '@/lib/utils/tailwind-helpers';
 import { LicenseModalProvider } from '@/providers/LicenseModalProvider';
 import { TeamContext } from '@/providers/TeamProvider';
+import { getLicenseStatus } from '@lukittu/shared';
 import {
   AlertTriangle,
   ArrowDownUp,

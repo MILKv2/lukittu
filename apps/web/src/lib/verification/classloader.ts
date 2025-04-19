@@ -9,7 +9,7 @@ import {
   regex,
   ReleaseStatus,
   RequestStatus,
-} from '@lukittu/prisma';
+} from '@lukittu/shared';
 import 'server-only';
 import { getFileFromPrivateS3 } from '../providers/aws-s3';
 import { CloudflareVisitorData } from '../providers/cloudflare';

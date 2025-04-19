@@ -1,7 +1,7 @@
 import { verifyApiAuthorization } from '@/lib/security/api-key-auth';
 import { IExternalDevResponse } from '@/types/common-api-types';
 import { HttpStatus } from '@/types/http-status';
-import { generateHMAC, logger, prisma, regex } from '@lukittu/prisma';
+import { generateHMAC, logger, prisma, regex } from '@lukittu/shared';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(

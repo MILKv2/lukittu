@@ -1,4 +1,4 @@
-import { prisma } from '../../';
+import { prisma } from '../..';
 import { generateHMAC } from '../security/crypto';
 
 const generateRandomString = (length: number): string => {

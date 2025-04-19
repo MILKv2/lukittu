@@ -1,7 +1,7 @@
 import { getLanguage } from '@/lib/utils/header-helpers';
 import { ErrorResponse } from '@/types/common-api-types';
 import { HttpStatus } from '@/types/http-status';
-import { logger, prisma, Prisma } from '@lukittu/prisma';
+import { logger, prisma, Prisma } from '@lukittu/shared';
 import { getTranslations } from 'next-intl/server';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';

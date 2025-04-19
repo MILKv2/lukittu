@@ -20,7 +20,7 @@ import {
   Team,
   User,
   WatermarkingSettings,
-} from '@lukittu/prisma';
+} from '@lukittu/shared';
 import { getTranslations } from 'next-intl/server';
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';

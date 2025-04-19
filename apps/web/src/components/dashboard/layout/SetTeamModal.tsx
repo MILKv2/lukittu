@@ -23,7 +23,7 @@ import {
 } from '@/lib/validation/team/set-team-schema';
 import { AuthContext } from '@/providers/AuthProvider';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Team } from '@lukittu/prisma';
+import { Team } from '@lukittu/shared';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useContext, useEffect, useState } from 'react';

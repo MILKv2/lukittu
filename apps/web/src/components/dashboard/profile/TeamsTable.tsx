@@ -26,7 +26,7 @@ import {
 } from '@/components/ui/table';
 import { AuthContext } from '@/providers/AuthProvider';
 import { TeamContext } from '@/providers/TeamProvider';
-import { Subscription, Team, User } from '@lukittu/prisma';
+import { Subscription, Team, User } from '@lukittu/shared';
 import {
   CheckCircle2,
   ChevronsUp,

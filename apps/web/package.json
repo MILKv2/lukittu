@@ -22,7 +22,7 @@
     "@aws-sdk/client-s3": "^3.787.0",
     "@aws-sdk/lib-storage": "^3.787.0",
     "@hookform/resolvers": "^3.10.0",
-    "@lukittu/prisma": "workspace:*",
+    "@lukittu/shared": "workspace:*",
     "@marsidev/react-turnstile": "^0.7.2",
     "@radix-ui/react-accordion": "^1.2.4",
     "@radix-ui/react-alert-dialog": "^1.1.7",

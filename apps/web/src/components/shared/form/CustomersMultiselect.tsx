@@ -4,7 +4,7 @@ import {
 } from '@/app/api/(dashboard)/customers/route';
 import { MultiSelect } from '@/components/ui/multi-select';
 import { TeamContext } from '@/providers/TeamProvider';
-import { Customer } from '@lukittu/prisma';
+import { Customer } from '@lukittu/shared';
 import { useTranslations } from 'next-intl';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';

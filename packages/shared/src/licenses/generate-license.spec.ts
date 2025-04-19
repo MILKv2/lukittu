@@ -1,4 +1,4 @@
-// import { generateHMAC } from '@lukittu/prisma';
+// import { generateHMAC } from '@lukittu/shared';
 
 // jest.mock('../security/crypto', () => ({
 //   __esModule: true,

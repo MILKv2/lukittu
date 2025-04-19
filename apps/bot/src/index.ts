@@ -1,18 +1,24 @@
+import { REST } from '@discordjs/rest';
 import {
-  Client,
-  GatewayIntentBits,
-  Events,
-  Collection,
-  Routes,
-  MessageFlags,
+  DiscordAccount,
+  Limits,
+  logger,
+  prisma,
+  Team,
+  User,
+} from '@lukittu/shared';
+import {
   ActivityType,
+  Client,
+  Collection,
+  Events,
+  GatewayIntentBits,
+  MessageFlags,
+  Routes,
 } from 'discord.js';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Command } from './structures/command';
-import { REST } from '@discordjs/rest';
-import { DiscordAccount, Limits, prisma, Team, User } from '@lukittu/prisma';
-import { logger } from '@lukittu/prisma';
 
 export type LinkedDiscordAccount = DiscordAccount & {
   user: Omit<User, 'passwordHash'> & {

@@ -3,7 +3,7 @@ import { getCloudflareVisitorData } from '@/lib/providers/cloudflare';
 import { getIp } from '@/lib/utils/header-helpers';
 import { handleClassloader } from '@/lib/verification/classloader';
 import { HttpStatus } from '@/types/http-status';
-import { logger, RequestStatus, RequestType } from '@lukittu/prisma';
+import { logger, RequestStatus, RequestType } from '@lukittu/shared';
 import { NextRequest } from 'next/server';
 
 export async function GET(

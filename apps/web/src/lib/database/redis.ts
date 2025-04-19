@@ -1,6 +1,6 @@
+import { logger } from '@lukittu/shared';
 import Redis from 'ioredis';
 import 'server-only';
-import { logger } from '@lukittu/prisma';
 
 const redisClient = new Redis({
   host: process.env.REDIS_HOST,

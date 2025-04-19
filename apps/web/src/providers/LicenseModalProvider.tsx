@@ -2,7 +2,7 @@
 import { DeleteLicenseConfirmModal } from '@/components/dashboard/licenses/LicenseDeleteConfirmModal';
 import { LicenseEmailDeliveryModal } from '@/components/dashboard/licenses/LicenseEmailDeliveryModal';
 import SetLicenseModal from '@/components/dashboard/licenses/list/SetLicenseModal';
-import { Customer, License, Metadata, Product } from '@lukittu/prisma';
+import { Customer, License, Metadata, Product } from '@lukittu/shared';
 import { createContext, useState } from 'react';
 
 type LicenseExtended = Omit<License, 'licenseKeyLookup'> & {

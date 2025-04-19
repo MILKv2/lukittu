@@ -18,10 +18,10 @@ import {
 } from '@/components/ui/table';
 import { useTableScroll } from '@/hooks/useTableScroll';
 import { getLicenseStatusBadgeVariant } from '@/lib/licenses/license-badge-variant';
-import { getLicenseStatus } from '@lukittu/prisma';
 import { cn } from '@/lib/utils/tailwind-helpers';
 import { LicenseModalProvider } from '@/providers/LicenseModalProvider';
 import { TeamContext } from '@/providers/TeamProvider';
+import { getLicenseStatus } from '@lukittu/shared';
 import { ArrowDownUp, CheckCircle, XCircle } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';

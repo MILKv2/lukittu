@@ -7,7 +7,7 @@ import {
   Settings,
   StripeIntegration,
   Team,
-} from '@lukittu/prisma';
+} from '@lukittu/shared';
 import { Stripe } from 'stripe';
 import { prismaMock } from '../../../jest.setup';
 import { sendLicenseDistributionEmail } from '../emails/templates/send-license-distribution-email';
@@ -27,7 +27,7 @@ type ExtendedTeam = Team & {
   };
 };
 
-jest.mock('@lukittu/prisma', () => ({
+jest.mock('@lukittu/shared', () => ({
   __esModule: true,
   logger: {
     info: jest.fn(),

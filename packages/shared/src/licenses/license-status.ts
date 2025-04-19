@@ -1,4 +1,4 @@
-import { License } from '../../';
+import { License } from '../..';
 
 export type LicenseStatus =
   | 'ACTIVE'

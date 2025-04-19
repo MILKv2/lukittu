@@ -5,7 +5,7 @@ import {
 } from '@/lib/providers/stripe-external';
 import { isRateLimited } from '@/lib/security/rate-limiter';
 import { HttpStatus } from '@/types/http-status';
-import { logger, prisma, regex } from '@lukittu/prisma';
+import { logger, prisma, regex } from '@lukittu/shared';
 import { NextRequest, NextResponse } from 'next/server';
 import { Stripe } from 'stripe';
 

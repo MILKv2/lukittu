@@ -1,5 +1,5 @@
 {
-  "name": "@lukittu/prisma",
+  "name": "@lukittu/shared",
   "version": "1.0.0",
   "main": "index.ts",
   "scripts": {

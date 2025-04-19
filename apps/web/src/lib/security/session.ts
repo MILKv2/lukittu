@@ -1,4 +1,4 @@
-import { logger, prisma, Prisma } from '@lukittu/prisma';
+import { logger, prisma, Prisma } from '@lukittu/shared';
 import { randomBytes } from 'crypto';
 import { cookies } from 'next/headers';
 import { cache } from 'react';

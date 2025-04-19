@@ -6,7 +6,7 @@ import {
   regex,
   RequestStatus,
   signChallenge,
-} from '@lukittu/prisma';
+} from '@lukittu/shared';
 import 'server-only';
 import { CloudflareVisitorData } from '../providers/cloudflare';
 import { isRateLimited } from '../security/rate-limiter';

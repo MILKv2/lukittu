@@ -16,7 +16,7 @@ import {
   Prisma,
   Product,
   regex,
-} from '@lukittu/prisma';
+} from '@lukittu/shared';
 import { getTranslations } from 'next-intl/server';
 import { NextRequest, NextResponse } from 'next/server';
 

@@ -5,7 +5,7 @@ import {
   RequestMethod,
   RequestStatus,
   RequestType,
-} from '@lukittu/prisma';
+} from '@lukittu/shared';
 import { NextRequest, NextResponse } from 'next/server';
 import 'server-only';
 import { getCloudflareVisitorData } from '../providers/cloudflare';
