@@ -203,7 +203,7 @@ function createLicenseEmbed(
 
   if (license.seats) {
     limitsFields.push({
-      name: 'Seats',
+      name: 'Concurrent users',
       value: license.seats.toString(),
       inline: true,
     });

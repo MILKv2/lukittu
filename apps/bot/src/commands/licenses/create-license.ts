@@ -644,7 +644,7 @@ async function showLimitsStep(
         inline: true,
       },
       {
-        name: 'Seats (Max Users)',
+        name: 'Concurrent users',
         value: state.seats ? state.seats.toString() : 'No limit',
         inline: true,
       },
@@ -826,7 +826,7 @@ async function showReviewStep(
 
   if (state.seats) {
     limitsFields.push({
-      name: 'Seats',
+      name: 'Concurrent users',
       value: state.seats.toString(),
       inline: true,
     });
@@ -1511,7 +1511,7 @@ async function handleLimitsModal(
 
   const seatsInput = new TextInputBuilder()
     .setCustomId('seats')
-    .setLabel('Seats/Max Users (leave empty for no limit)')
+    .setLabel('Concurrent users (leave empty for no limit)')
     .setStyle(TextInputStyle.Short)
     .setPlaceholder('e.g., 5')
     .setRequired(false);
@@ -1556,7 +1556,7 @@ async function handleLimitsModal(
       const seats = parseInt(seatsStr);
       if (isNaN(seats) || seats < 1) {
         await modalResponse.reply({
-          content: 'Seats must be a positive number.',
+          content: 'Concurrent users must be a positive number.',
           flags: MessageFlags.Ephemeral,
         });
         return;
@@ -1586,7 +1586,7 @@ async function handleLimitsModal(
           inline: true,
         },
         {
-          name: 'Seats (Max Users)',
+          name: 'Concurrent users',
           value: state.seats ? state.seats.toString() : 'No limit',
           inline: true,
         },
