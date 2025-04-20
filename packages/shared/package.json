@@ -12,5 +12,8 @@
   },
   "devDependencies": {
     "prisma": "catalog:prisma"
+  },
+  "browser": {
+    "crypto": false
   }
 }
