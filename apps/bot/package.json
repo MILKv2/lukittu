@@ -3,16 +3,14 @@
   "version": "0.1.0",
   "scripts": {
     "dev": "tsx watch --env-file=.env src/index.ts",
-    "build": "tsc",
-    "clean": "rm -rf node_modules && rm -rf dist"
+    "build": "tsc"
   },
   "dependencies": {
-    "@lukittu/shared": "workspace:*",
-    "discord.js": "^14.18.0"
+    "discord.js": "^14.18.0",
+    "@lukittu/shared": "workspace:*"
   },
   "devDependencies": {
     "@eslint/js": "^9.24.0",
-    "@types/node": "^20.17.30",
     "eslint": "^9.24.0",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-prettier": "^5.2.6",

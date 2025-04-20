@@ -30,9 +30,6 @@ importers:
       '@eslint/js':
         specifier: ^9.24.0
         version: 9.25.0
-      '@types/node':
-        specifier: ^20.17.30
-        version: 20.17.30
       eslint:
         specifier: ^9.24.0
         version: 9.25.0(jiti@1.21.7)
@@ -323,9 +320,15 @@ importers:
         specifier: ^6.6.0
         version: 6.6.0(prisma@6.6.0(typescript@5.8.3))(typescript@5.8.3)
     devDependencies:
+      '@types/node':
+        specifier: ^20.17.30
+        version: 20.17.30
       prisma:
         specifier: catalog:prisma
         version: 6.6.0(typescript@5.8.3)
+      typescript:
+        specifier: ^5.8.3
+        version: 5.8.3
 
 packages:
 
