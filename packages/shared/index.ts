@@ -1,5 +1,5 @@
-import { PrismaClient } from './generated/client';
-export * from './generated/client';
+import { PrismaClient } from './prisma/generated/client';
+export * from './prisma/generated/client';
 
 declare global {
   // eslint-disable-next-line no-var
@@ -53,7 +53,7 @@ if (process.env.NODE_ENV === 'development') global.prisma = prisma;
 export { prisma };
 
 export * from './src/constants/regex';
-export * from './src/licenses/license-status';
 export * from './src/licenses/generate-license';
+export * from './src/licenses/license-status';
 export * from './src/logging/logger';
 export * from './src/security/crypto';

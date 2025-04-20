@@ -1,5 +1,4 @@
-import { logger, prisma } from '@lukittu/shared';
-import { regex } from '@lukittu/shared/src/constants/regex';
+import { logger, prisma, regex } from '@lukittu/shared';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Command } from '../../structures/command';
 
