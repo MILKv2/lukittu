@@ -13,7 +13,9 @@
     "db:deploy": "pnpm --filter @lukittu/shared docker-deploy",
     "db:generate": "pnpm --filter @lukittu/shared generate",
     "build:web": "pnpm --filter lukittu-web build",
-    "build:bot": "pnpm --filter lukittu-bot build"
+    "build:bot": "pnpm --filter lukittu-bot build",
+    "build:shared": "pnpm --filter @lukittu/shared build",
+    "build": "pnpm -r build"
   },
   "devDependencies": {
     "prettier": "^3.5.3"

@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "scripts": {
     "dev": "tsx watch --env-file=.env src/index.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "start": "node --env-file=.env dist/index.js",
+    "lint": "eslint ."
   },
   "dependencies": {
     "discord.js": "^14.18.0",

@@ -47,20 +47,25 @@ async function loadCommands() {
     const folderPath = path.join(commandsPath, folder);
     const commandFiles = fs
       .readdirSync(folderPath)
-      .filter((file) => file.endsWith('.ts'));
+      .filter((file) => file.endsWith('.ts') || file.endsWith('.js'));
 
     for (const file of commandFiles) {
       const filePath = path.join(folderPath, file);
-      const command = (await import(filePath)).default;
+      try {
+        const importedCommand = await import(filePath);
+        const command = importedCommand.default || importedCommand;
 
-      // Set a new item in the Collection with the key as the command name and the value as the command module
-      if ('data' in command && 'execute' in command) {
-        client.commands.set(command.data.name, command);
-        commands.push(command.data);
-      } else {
-        logger.info(
-          `The command at ${filePath} is missing a required "data" or "execute" property.`,
-        );
+        // Check if the command has the required properties
+        if (command && 'data' in command && 'execute' in command) {
+          client.commands.set(command.data.name, command);
+          commands.push(command.data);
+        } else {
+          logger.info(
+            `The command at ${filePath} is missing a required "data" or "execute" property.`,
+          );
+        }
+      } catch (error) {
+        logger.error(`Error loading command from ${filePath}:`, error);
       }
     }
   }

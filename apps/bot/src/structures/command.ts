@@ -19,4 +19,6 @@ export interface Command {
   ) => Promise<void>;
 }
 
-export const Command = (options: Command): Command => options;
+export function Command(options: Command): Command {
+  return options;
+}

@@ -7,7 +7,9 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "outDir": "./dist",
-    "moduleResolution": "nodenext",
-    "module": "nodenext"
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "target": "es2020",
+    "allowSyntheticDefaultImports": true
   }
 }
