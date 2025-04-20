@@ -11,7 +11,9 @@
     "format": "prettier --write .",
     "db:migrate": "pnpm --filter @lukittu/shared migrate",
     "db:deploy": "pnpm --filter @lukittu/shared docker-deploy",
-    "build:next": "pnpm --filter lukittu-web build"
+    "build:next": "pnpm --filter lukittu-web build",
+    "build:bot": "pnpm --filter lukittu-bot build",
+    "clean": "pnpm -r clean && rm -rf node_modules"
   },
   "devDependencies": {
     "prettier": "^3.5.3"

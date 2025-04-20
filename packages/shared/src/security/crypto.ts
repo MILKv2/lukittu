@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import * as crypto from 'crypto';
 import { logger } from '../logging/logger';
 
 const ENCRYPTION_KEY =
