@@ -3,12 +3,6 @@ import { Buffer } from 'buffer';
 import { deflateRawSync } from 'zlib';
 import { getMainClassFromJar } from './java-helpers';
 
-jest.mock('@lukittu/shared', () => ({
-  logger: {
-    error: jest.fn(),
-  },
-}));
-
 describe('getMainClassFromJar', () => {
   function createMockZipBuffer(
     files: { name: string; content: string; compressed?: boolean }[],

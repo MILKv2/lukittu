@@ -27,22 +27,6 @@ type ExtendedTeam = Team & {
   };
 };
 
-jest.mock('@lukittu/shared', () => ({
-  __esModule: true,
-  logger: {
-    info: jest.fn(),
-    error: jest.fn(),
-  },
-  generateUniqueLicense: jest.fn(),
-  encryptLicenseKey: jest.fn(),
-  generateHMAC: jest.fn(),
-  regex: {
-    uuidV4: {
-      test: jest.fn(),
-    },
-  },
-}));
-
 jest.mock('../emails/templates/send-license-distribution-email', () => ({
   __esModule: true,
   sendLicenseDistributionEmail: jest.fn(),

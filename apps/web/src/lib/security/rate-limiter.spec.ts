@@ -10,12 +10,6 @@ jest.mock('../database/redis', () => ({
   },
 }));
 
-jest.mock('@lukittu/shared', () => ({
-  logger: {
-    error: jest.fn(),
-  },
-}));
-
 describe('Rate Limiting', () => {
   const testKey = 'test-key';
   const maxRequests = 5;

@@ -2,11 +2,6 @@ import { headers } from 'next/headers';
 import { getCloudflareVisitorData, verifyTurnstileToken } from './cloudflare';
 
 jest.mock('next/headers');
-jest.mock('@lukittu/shared', () => ({
-  logger: {
-    error: jest.fn(),
-  },
-}));
 
 describe('verifyTurnstileToken', () => {
   beforeEach(() => {
