@@ -63,7 +63,18 @@ jobs:
             ${{ runner.os }}-
 
       - run: pnpm install --frozen-lockfile
-      - run: pnpm run db:generate && pnpm run --filter lukittu-web lint && pnpm run --filter lukittu-web test
+
+      - name: Generate database client
+        run: pnpm run db:generate
+
+      - name: Build shared package
+        run: pnpm run build:shared
+
+      - name: Lint web application
+        run: pnpm run --filter lukittu-web lint
+
+      - name: Run tests
+        run: pnpm run --filter lukittu-web test
 
       - uses: actions/upload-artifact@v4
         if: always()

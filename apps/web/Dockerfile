@@ -40,7 +40,7 @@ COPY apps ./apps
 WORKDIR /app/apps/web
 
 # Generate Prisma client
-RUN cd ../../packages/shared && pnpm run generate
+RUN cd ../../packages/shared && pnpm run generate && pnpm run build
 
 # Build the Next.js app
 RUN pnpm run build
