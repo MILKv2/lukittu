@@ -15,11 +15,11 @@ COPY package.json ./
 
 # Copy all package.json files from workspace packages
 COPY apps/web/package.json ./apps/web/
-COPY packages/prisma/package.json ./packages/prisma/
+COPY packages/shared/package.json ./packages/shared/
 
 # Install dependencies based on the preferred package manager
 COPY pnpm-lock.yaml ./
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile
 
 # 2. Rebuild the source code only when needed
 FROM base AS builder
@@ -27,7 +27,7 @@ WORKDIR /app
 
 # Copy all workspace files
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/packages/prisma/node_modules ./packages/prisma/node_modules
+COPY --from=deps /app/packages/shared/node_modules ./packages/shared/node_modules
 COPY --from=deps /app/apps/web/node_modules ./apps/web/node_modules
 COPY --from=deps /app/pnpm-workspace.yaml ./
 COPY --from=deps /app/package.json ./
@@ -40,7 +40,7 @@ COPY apps ./apps
 WORKDIR /app/apps/web
 
 # Generate Prisma client
-RUN cd ../../packages/prisma && pnpm run generate
+RUN cd ../../packages/shared && pnpm run generate
 
 # Build the Next.js app
 RUN pnpm run build

@@ -212,7 +212,7 @@ export function encryptChunk(chunk: Buffer, sessionKey: string) {
   return { encryptedChunk, iv, authTag };
 }
 
-export function createEncryptionStream(sessionKey: string) {
+export function createEncryptionStream(sessionKey: string): TransformStream {
   return new TransformStream({
     transform: async (chunk: Buffer, controller) => {
       const { authTag, encryptedChunk, iv } = encryptChunk(chunk, sessionKey);

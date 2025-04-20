@@ -1,4 +1,4 @@
-import { License } from '../..';
+import { License } from '../../prisma/generated/client';
 
 export type LicenseStatus =
   | 'ACTIVE'

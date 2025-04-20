@@ -41,7 +41,7 @@ Lukittu uses a pnpm workspace monorepo structure with the following packages:
 
 - `apps/web`: The core Next.js application
 - `apps/bot`: Lukittu's Discord bot
-- `packages/prisma`: Shared Prisma schema and client
+- `packages/shared`: Shared code and utilities
 
 To get started with the project locally, follow the steps below:
 

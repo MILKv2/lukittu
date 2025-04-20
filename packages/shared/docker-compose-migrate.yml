@@ -2,7 +2,7 @@ services:
   prisma:
     image: node:latest
     env_file: .env
-    working_dir: /app/packages/prisma
+    working_dir: /app/packages/shared
     environment:
       DATABASE_URL: ${DATABASE_URL}
     volumes:

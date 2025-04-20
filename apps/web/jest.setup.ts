@@ -6,7 +6,15 @@ export const prismaMock = mockDeep<PrismaClient>();
 
 jest.mock('@lukittu/shared', () => ({
   __esModule: true,
+  ...jest.requireActual('@lukittu/shared'),
   prisma: prismaMock,
+  logger: {
+    error: jest.fn(),
+    info: jest.fn(),
+  },
+  encryptLicenseKey: jest.fn(),
+  generateUniqueLicense: jest.fn(),
+  generateHMAC: jest.fn(),
 }));
 
 beforeEach(() => {

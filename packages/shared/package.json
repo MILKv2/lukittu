@@ -1,17 +1,20 @@
 {
   "name": "@lukittu/shared",
   "version": "1.0.0",
-  "main": "index.ts",
+  "main": "dist/index.js",
   "scripts": {
     "generate": "prisma generate",
     "migrate": "prisma migrate dev",
-    "deploy": "prisma migrate deploy"
+    "deploy": "prisma migrate deploy",
+    "build": "npm run generate && tsc && cp -r prisma dist/"
   },
   "dependencies": {
     "@prisma/client": "^6.6.0"
   },
   "devDependencies": {
-    "prisma": "catalog:prisma"
+    "@types/node": "^20.17.30",
+    "prisma": "catalog:prisma",
+    "typescript": "^5.8.3"
   },
   "browser": {
     "crypto": false
