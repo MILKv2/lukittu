@@ -795,14 +795,14 @@ async function showReviewStep(
   const products =
     state.productIds.length > 0
       ? await prisma.product.findMany({
-          where: { id: { in: state.productIds } },
+          where: { id: { in: state.productIds }, teamId: state.teamId },
         })
       : [];
 
   const customers =
     state.customerIds.length > 0
       ? await prisma.customer.findMany({
-          where: { id: { in: state.customerIds } },
+          where: { id: { in: state.customerIds }, teamId: state.teamId },
         })
       : [];
 

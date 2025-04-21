@@ -1,5 +1,5 @@
 import { REST } from '@discordjs/rest';
-import { logger, prisma } from '@lukittu/shared';
+import { logger, Prisma, prisma } from '@lukittu/shared';
 import {
   ActivityType,
   Client,
@@ -89,27 +89,29 @@ async function checkLinkedAccountAndPermission(
   userId: string,
 ): Promise<LinkedDiscordAccount | null> {
   try {
-    const discordAccount = await prisma.discordAccount.findUnique({
-      where: { discordId: userId },
-      include: {
-        selectedTeam: {
-          where: {
-            deletedAt: null,
-          },
-          include: {
-            limits: true,
-          },
+    const includeData = {
+      selectedTeam: {
+        where: {
+          deletedAt: null,
         },
-        user: {
-          include: {
-            teams: {
-              where: {
-                deletedAt: null,
-              },
+        include: {
+          limits: true,
+        },
+      },
+      user: {
+        include: {
+          teams: {
+            where: {
+              deletedAt: null,
             },
           },
         },
       },
+    } satisfies Prisma.DiscordAccountInclude;
+
+    const discordAccount = await prisma.discordAccount.findUnique({
+      where: { discordId: userId },
+      include: includeData,
     });
 
     // If user has selected a team, check if they are still a member of that team
@@ -123,16 +125,17 @@ async function checkLinkedAccountAndPermission(
         );
 
         if (!isInTeam) {
-          await prisma.discordAccount.update({
+          const updatedAccount = await prisma.discordAccount.update({
             where: { id: discordAccount.id },
             data: { selectedTeamId: null },
+            include: includeData,
           });
-
-          discordAccount.selectedTeamId = null;
 
           logger.info(
             `User ${userId} is no longer a member of the selected team. Updated selectedTeamId to null.`,
           );
+
+          return updatedAccount;
         }
       }
     }
