@@ -53,9 +53,38 @@ function validateFullName(fullName: string | null): {
   isValid: boolean;
   message?: string;
 } {
-  if (fullName && fullName.length > 255) {
+  if (!fullName) return { isValid: true }; // It's optional
+  if (fullName.length < 3) {
+    return { isValid: false, message: 'Name must be at least 3 characters' };
+  }
+  if (fullName.length > 255) {
     return { isValid: false, message: 'Name must be less than 255 characters' };
   }
+  return { isValid: true };
+}
+
+function validateAddressField(
+  value: string | null,
+  fieldName: string,
+  minLength?: number,
+  maxLength?: number,
+): { isValid: boolean; message?: string } {
+  if (!value) return { isValid: true };
+
+  if (minLength && value.length < minLength) {
+    return {
+      isValid: false,
+      message: `${fieldName} must be at least ${minLength} characters`,
+    };
+  }
+
+  if (maxLength && value.length > maxLength) {
+    return {
+      isValid: false,
+      message: `${fieldName} must be less than ${maxLength} characters`,
+    };
+  }
+
   return { isValid: true };
 }
 
@@ -78,6 +107,83 @@ function validateMetadataItem(
       message: 'Value must be less than 255 characters',
     };
   }
+  return { isValid: true };
+}
+
+function validateAddress(address: CustomerCreationState['address']): {
+  isValid: boolean;
+  field?: string;
+  message?: string;
+} {
+  // Validate line1
+  const line1Validation = validateAddressField(
+    address.line1,
+    'Street line 1',
+    5,
+    255,
+  );
+  if (!line1Validation.isValid) {
+    return { isValid: false, field: 'line1', message: line1Validation.message };
+  }
+
+  // Validate line2
+  const line2Validation = validateAddressField(
+    address.line2,
+    'Street line 2',
+    undefined,
+    255,
+  );
+  if (!line2Validation.isValid) {
+    return { isValid: false, field: 'line2', message: line2Validation.message };
+  }
+
+  // Validate city
+  const cityValidation = validateAddressField(address.city, 'City', 2, 100);
+  if (!cityValidation.isValid) {
+    return { isValid: false, field: 'city', message: cityValidation.message };
+  }
+
+  // Validate state/province
+  const stateValidation = validateAddressField(
+    address.state,
+    'State/Province',
+    2,
+    100,
+  );
+  if (!stateValidation.isValid) {
+    return { isValid: false, field: 'state', message: stateValidation.message };
+  }
+
+  // Validate postal code
+  const postalValidation = validateAddressField(
+    address.postalCode,
+    'Postal code',
+    3,
+    20,
+  );
+  if (!postalValidation.isValid) {
+    return {
+      isValid: false,
+      field: 'postalCode',
+      message: postalValidation.message,
+    };
+  }
+
+  // Validate country
+  const countryValidation = validateAddressField(
+    address.country,
+    'Country',
+    2,
+    100,
+  );
+  if (!countryValidation.isValid) {
+    return {
+      isValid: false,
+      field: 'country',
+      message: countryValidation.message,
+    };
+  }
+
   return { isValid: true };
 }
 
@@ -188,7 +294,7 @@ async function startCustomerWizard(
         type HandlerFunction = (
           i: MessageComponentInteraction,
           state: CustomerCreationState,
-          teamId?: string,
+          teamId: string,
           teamName?: string,
           teamImageUrl?: string | null,
           userImageUrl?: string | null,
@@ -738,6 +844,7 @@ async function handlePreviousStep(
 async function handleBasicInfoModal(
   interaction: MessageComponentInteraction,
   state: CustomerCreationState,
+  teamId: string,
 ) {
   const modal = new ModalBuilder()
     .setCustomId('basic_info_modal')
@@ -806,60 +913,93 @@ async function handleBasicInfoModal(
       }
     }
 
-    state.email = email;
-    state.fullName = fullName;
-
     await modalResponse.deferUpdate();
 
-    const embed = new EmbedBuilder()
-      .setTitle('Customer Creation Wizard - Basic Info')
-      .setColor(Colors.Blue)
-      .setDescription(
-        "Let's set up a new customer. First, let's configure the basic information.",
-      )
-      .addFields(
-        {
-          name: 'Email',
-          value: state.email,
-          inline: true,
+    try {
+      const existingCustomer = await prisma.customer.findFirst({
+        where: {
+          teamId,
+          email,
         },
-        {
-          name: 'Full Name',
-          value: state.fullName || '_Not set_',
-          inline: true,
-        },
-      )
-      .setFooter({ text: 'Step 1 of 4: Basic Info' });
+      });
 
-    const basicInfoButton = new ButtonBuilder()
-      .setCustomId('basic_info_modal')
-      .setLabel('Edit Basic Information')
-      .setStyle(ButtonStyle.Primary);
+      if (existingCustomer) {
+        await modalResponse.followUp({
+          content: `A customer with the email "${email}" already exists in your team.`,
+          flags: MessageFlags.Ephemeral,
+        });
+        return;
+      }
 
-    const basicInfoRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
-      basicInfoButton,
-    );
+      state.email = email;
+      state.fullName = fullName;
 
-    const nextButton = new ButtonBuilder()
-      .setCustomId('wizard_next')
-      .setLabel('Next: Address')
-      .setStyle(ButtonStyle.Primary)
-      .setDisabled(!state.email);
+      const teamNameFromEmbed =
+        interaction.message?.embeds?.[0]?.author?.name || 'Unknown Team';
+      const teamImageUrlFromEmbed =
+        interaction.message?.embeds?.[0]?.author?.iconURL || null;
 
-    const cancelButton = new ButtonBuilder()
-      .setCustomId('wizard_cancel')
-      .setLabel('Cancel')
-      .setStyle(ButtonStyle.Danger);
+      const embed = new EmbedBuilder()
+        .setTitle('Customer Creation Wizard - Basic Info')
+        .setColor(Colors.Blue)
+        .setDescription(
+          "Let's set up a new customer. First, let's configure the basic information.",
+        )
+        .addFields(
+          {
+            name: 'Email',
+            value: state.email,
+            inline: true,
+          },
+          {
+            name: 'Full Name',
+            value: state.fullName || '_Not set_',
+            inline: true,
+          },
+        )
+        .setAuthor({
+          name: teamNameFromEmbed,
+          iconURL: teamImageUrlFromEmbed || undefined,
+        })
+        .setFooter({ text: 'Step 1 of 4: Basic Info' });
 
-    const buttonRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
-      cancelButton,
-      nextButton,
-    );
+      const basicInfoButton = new ButtonBuilder()
+        .setCustomId('basic_info_modal')
+        .setLabel('Edit Basic Information')
+        .setStyle(ButtonStyle.Primary);
 
-    await modalResponse.editReply({
-      embeds: [embed],
-      components: [basicInfoRow, buttonRow],
-    });
+      const basicInfoRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
+        basicInfoButton,
+      );
+
+      const nextButton = new ButtonBuilder()
+        .setCustomId('wizard_next')
+        .setLabel('Next: Address')
+        .setStyle(ButtonStyle.Primary)
+        .setDisabled(!state.email);
+
+      const cancelButton = new ButtonBuilder()
+        .setCustomId('wizard_cancel')
+        .setLabel('Cancel')
+        .setStyle(ButtonStyle.Danger);
+
+      const buttonRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
+        cancelButton,
+        nextButton,
+      );
+
+      await modalResponse.editReply({
+        embeds: [embed],
+        components: [basicInfoRow, buttonRow],
+      });
+    } catch (error) {
+      logger.error('Error checking for existing customer:', error);
+      await modalResponse.followUp({
+        content:
+          'An error occurred while checking for existing customers. Please try again.',
+        flags: MessageFlags.Ephemeral,
+      });
+    }
   } catch (error) {
     logger.error('Error handling basic info modal:', error);
   }
@@ -984,6 +1124,24 @@ async function handleAddressModal(
     const postalCode =
       modalResponse.fields.getTextInputValue('postal_code') || null;
     const country = modalResponse.fields.getTextInputValue('country') || null;
+
+    const addressToValidate = {
+      line1,
+      line2,
+      city,
+      state: stateProvince,
+      postalCode,
+      country,
+    };
+
+    const addressValidation = validateAddress(addressToValidate);
+    if (!addressValidation.isValid) {
+      await modalResponse.reply({
+        content: `Invalid address: ${addressValidation.message}`,
+        flags: MessageFlags.Ephemeral,
+      });
+      return;
+    }
 
     state.address.line1 = line1;
     state.address.line2 = line2;
