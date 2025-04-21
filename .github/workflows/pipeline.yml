@@ -177,7 +177,7 @@ jobs:
           retention-days: 7
 
   build-web:
-    needs: [lint-web, test-web, test-shared]
+    needs: [lint-web, test-web, test-shared, lint-shared]
     name: Build Web Docker Image
     timeout-minutes: 15
     runs-on: ubuntu-latest
@@ -225,7 +225,7 @@ jobs:
           provenance: false
 
   build-bot:
-    needs: [lint-bot, test-shared]
+    needs: [lint-bot, test-shared, lint-shared]
     name: Build Bot Docker Image
     timeout-minutes: 15
     runs-on: ubuntu-latest
