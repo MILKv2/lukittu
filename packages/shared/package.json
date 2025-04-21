@@ -4,12 +4,14 @@
   "main": "dist/src/index.js",
   "scripts": {
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "generate": "prisma generate",
     "migrate": "prisma migrate dev",
     "deploy": "prisma migrate deploy",
     "build": "npm run generate && tsc && cp -r prisma dist/",
     "test": "jest --passWithNoTests",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@prisma/client": "^6.6.0"
