@@ -68,8 +68,8 @@ jobs:
         run: |
           pnpm run build:shared
 
-  build-and-lint-shared:
-    name: Build and Lint Shared Package
+  lint-shared:
+    name: Lint Shared Package
     needs: [setup, check-translation]
     runs-on: ubuntu-latest
     steps:
