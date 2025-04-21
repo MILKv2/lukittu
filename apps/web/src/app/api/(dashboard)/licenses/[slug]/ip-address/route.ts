@@ -3,7 +3,7 @@ import { iso3toIso2, iso3ToName } from '@/lib/utils/country-helpers';
 import { getLanguage, getSelectedTeam } from '@/lib/utils/header-helpers';
 import { ErrorResponse } from '@/types/common-api-types';
 import { HttpStatus } from '@/types/http-status';
-import { logger, prisma, Prisma, regex } from '@lukittu/shared';
+import { logger, prisma, regex } from '@lukittu/shared';
 import { getTranslations } from 'next-intl/server';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -150,28 +150,47 @@ export async function GET(
     const license = team.licenses[0];
 
     const [ipAddresses, totalResults, hasResults] = await prisma.$transaction([
-      prisma.$queryRaw<
-        {
-          ipAddress: string;
-          lastSeen: Date;
-          requestCount: number;
-          country: string | null;
-        }[]
-      >`
-        SELECT 
-          "ipAddress",
-          MAX("createdAt") as "lastSeen",
-          CAST(COUNT(*) AS INTEGER) as "requestCount",
-          MAX("country") as "country"
-        FROM "RequestLog"
-        WHERE "licenseId" = ${license.id}
-        AND "createdAt" >= ${retentionDate}
-        GROUP BY "ipAddress"
-        ORDER BY "lastSeen" ${
-          sortDirection === 'asc' ? Prisma.sql`ASC` : Prisma.sql`DESC`
-        }
-        LIMIT ${take} OFFSET ${skip}
-      `,
+      sortDirection === 'asc'
+        ? prisma.$queryRaw<
+            {
+              ipAddress: string;
+              lastSeen: Date;
+              requestCount: number;
+              country: string | null;
+            }[]
+          >`
+            SELECT 
+              "ipAddress",
+              MAX("createdAt") as "lastSeen",
+              CAST(COUNT(*) AS INTEGER) as "requestCount",
+              MAX("country") as "country"
+            FROM "RequestLog"
+            WHERE "licenseId" = ${license.id}
+            AND "createdAt" >= ${retentionDate}
+            GROUP BY "ipAddress"
+            ORDER BY "lastSeen" ASC
+            LIMIT ${take} OFFSET ${skip}
+          `
+        : prisma.$queryRaw<
+            {
+              ipAddress: string;
+              lastSeen: Date;
+              requestCount: number;
+              country: string | null;
+            }[]
+          >`
+            SELECT 
+              "ipAddress",
+              MAX("createdAt") as "lastSeen",
+              CAST(COUNT(*) AS INTEGER) as "requestCount",
+              MAX("country") as "country"
+            FROM "RequestLog"
+            WHERE "licenseId" = ${license.id}
+            AND "createdAt" >= ${retentionDate}
+            GROUP BY "ipAddress"
+            ORDER BY "lastSeen" DESC
+            LIMIT ${take} OFFSET ${skip}
+          `,
       prisma.$queryRaw<[{ count: number }]>`
         SELECT CAST(COUNT(DISTINCT "ipAddress") AS INTEGER) as count
         FROM "RequestLog"
