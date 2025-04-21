@@ -1325,17 +1325,10 @@ async function handleExpirationDateModal(
       modalResponse.fields.getTextInputValue('expiration_date');
     const date = new Date(dateString);
 
-    if (isNaN(date.getTime())) {
+    const validation = validateExpirationDate(date);
+    if (!validation.isValid) {
       await modalResponse.reply({
-        content: 'Invalid date format. Please use YYYY-MM-DD format.',
-        flags: MessageFlags.Ephemeral,
-      });
-      return;
-    }
-
-    if (date <= new Date()) {
-      await modalResponse.reply({
-        content: 'Expiration date must be in the future.',
+        content: validation.message,
         flags: MessageFlags.Ephemeral,
       });
       return;
@@ -1457,9 +1450,10 @@ async function handleExpirationDaysModal(
       modalResponse.fields.getTextInputValue('expiration_days'),
     );
 
-    if (isNaN(days) || days < 1) {
+    const validation = validateDuration(days);
+    if (!validation.isValid) {
       await modalResponse.reply({
-        content: 'Please enter a valid positive number for days.',
+        content: validation.message,
         flags: MessageFlags.Ephemeral,
       });
       return;
@@ -1623,9 +1617,10 @@ async function handleLimitsModal(
 
     if (ipLimitStr) {
       const ipLimit = parseInt(ipLimitStr);
-      if (isNaN(ipLimit) || ipLimit < 1) {
+      const validation = validateNumericLimit(ipLimit, 'IP limit');
+      if (!validation.isValid) {
         await modalResponse.reply({
-          content: 'IP limit must be a positive number.',
+          content: validation.message,
           flags: MessageFlags.Ephemeral,
         });
         return;
@@ -1637,9 +1632,10 @@ async function handleLimitsModal(
 
     if (seatsStr) {
       const seats = parseInt(seatsStr);
-      if (isNaN(seats) || seats < 1) {
+      const validation = validateNumericLimit(seats, 'Concurrent users');
+      if (!validation.isValid) {
         await modalResponse.reply({
-          content: 'Concurrent users must be a positive number.',
+          content: validation.message,
           flags: MessageFlags.Ephemeral,
         });
         return;
@@ -1756,9 +1752,10 @@ async function handleAddMetadataModal(
     const key = modalResponse.fields.getTextInputValue('metadata_key');
     const value = modalResponse.fields.getTextInputValue('metadata_value');
 
-    if (!key || !value) {
+    const validation = validateMetadataItem(key, value);
+    if (!validation.isValid) {
       await modalResponse.reply({
-        content: 'Both key and value are required for metadata.',
+        content: validation.message,
         flags: MessageFlags.Ephemeral,
       });
       return;
@@ -2006,4 +2003,80 @@ function getExpirationTypeDisplay(type: LicenseExpirationType): string {
     default:
       return 'Unknown';
   }
+}
+
+/**
+ * Validate expiration date
+ */
+function validateExpirationDate(date: Date): {
+  isValid: boolean;
+  message?: string;
+} {
+  if (isNaN(date.getTime())) {
+    return { isValid: false, message: 'Invalid date format' };
+  }
+
+  if (date <= new Date()) {
+    return { isValid: false, message: 'Expiration date must be in the future' };
+  }
+
+  return { isValid: true };
+}
+
+/**
+ * Validate duration in days
+ */
+function validateDuration(days: number): {
+  isValid: boolean;
+  message?: string;
+} {
+  if (isNaN(days) || days < 1) {
+    return { isValid: false, message: 'Duration must be a positive number' };
+  }
+
+  return { isValid: true };
+}
+
+/**
+ * Validate numeric limits
+ */
+function validateNumericLimit(
+  value: number | undefined,
+  fieldName: string,
+): { isValid: boolean; message?: string } {
+  if (value === undefined) return { isValid: true };
+
+  if (isNaN(value) || value < 1) {
+    return {
+      isValid: false,
+      message: `${fieldName} must be a positive number`,
+    };
+  }
+
+  return { isValid: true };
+}
+
+/**
+ * Validate metadata item
+ */
+function validateMetadataItem(
+  key: string,
+  value: string,
+): { isValid: boolean; message?: string } {
+  if (!key) {
+    return { isValid: false, message: 'Key is required' };
+  }
+  if (key.length > 255) {
+    return { isValid: false, message: 'Key must be less than 255 characters' };
+  }
+  if (!value) {
+    return { isValid: false, message: 'Value is required' };
+  }
+  if (value.length > 255) {
+    return {
+      isValid: false,
+      message: 'Value must be less than 255 characters',
+    };
+  }
+  return { isValid: true };
 }
