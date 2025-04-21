@@ -68,45 +68,9 @@ jobs:
         run: |
           pnpm run build:shared
 
-  lint-web:
-    name: Lint Web App
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 'latest'
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 'latest'
-          cache: 'pnpm'
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-      - name: Lint web application
-        run: pnpm run --filter lukittu-web lint
-
-  lint-bot:
-    name: Lint Bot App
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 'latest'
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 'latest'
-          cache: 'pnpm'
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-      - name: Lint bot application
-        run: pnpm run --filter lukittu-bot lint
-
-  lint-shared:
-    name: Lint Shared Package
-    needs: setup
+  build-and-lint-shared:
+    name: Build and Lint Shared Package
+    needs: [setup, check-translation]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -124,9 +88,45 @@ jobs:
       - name: Lint shared package
         run: pnpm run --filter @lukittu/shared lint
 
+  lint-web:
+    name: Lint Web App
+    needs: [build-and-lint-shared]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 'latest'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 'latest'
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Lint web application
+        run: pnpm run --filter lukittu-web lint
+
+  lint-bot:
+    name: Lint Bot App
+    needs: [build-and-lint-shared]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 'latest'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 'latest'
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Lint bot application
+        run: pnpm run --filter lukittu-bot lint
+
   test-web:
     name: Test Web App
-    needs: setup
+    needs: [build-and-lint-shared]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -150,7 +150,7 @@ jobs:
 
   test-shared:
     name: Test Shared Package
-    needs: setup
+    needs: [build-and-lint-shared]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -175,7 +175,7 @@ jobs:
           retention-days: 7
 
   build-web:
-    needs: [check-translation, lint-web, test-web]
+    needs: [lint-web, test-web]
     name: Build Web Docker Image
     timeout-minutes: 15
     runs-on: ubuntu-latest
@@ -223,7 +223,7 @@ jobs:
           provenance: false
 
   build-bot:
-    needs: [check-translation, lint-bot, lint-shared, test-shared]
+    needs: [lint-bot, test-shared]
     name: Build Bot Docker Image
     timeout-minutes: 15
     runs-on: ubuntu-latest
