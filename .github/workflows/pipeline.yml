@@ -73,20 +73,25 @@ jobs:
       - name: Lint web application
         run: pnpm run --filter lukittu-web lint
 
-      - name: Run tests
+      - name: Run tests for web application
         run: pnpm run --filter lukittu-web test
+
+      - name: Run tests for shared package
+        run: pnpm run --filter @lukittu/shared test
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: test-results
-          path: apps/web/coverage/
+          path: |
+            apps/web/coverage/
+            packages/shared/coverage/
           retention-days: 7
 
   build:
     needs: [check-translation, verify]
-    name: Build Docker Image
-    timeout-minutes: 10
+    name: Build Docker Images
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
@@ -115,7 +120,7 @@ jobs:
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
-      - name: Build and push docker image
+      - name: Build and push web docker image
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -125,6 +130,22 @@ jobs:
           cache-from: |
             type=gha
             type=registry,ref=${{ secrets.REGISTRY_USERNAME }}/${{ secrets.IMAGE }}:latest
+          cache-to: type=gha,mode=max
+          build-args: |
+            BUILDKIT_INLINE_CACHE=1
+          platforms: linux/amd64
+          provenance: false
+
+      - name: Build and push bot docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./packages/bot/Dockerfile
+          push: true
+          tags: ${{ secrets.REGISTRY_USERNAME }}/${{ secrets.IMAGE_BOT }}:latest
+          cache-from: |
+            type=gha
+            type=registry,ref=${{ secrets.REGISTRY_USERNAME }}/${{ secrets.IMAGE_BOT }}:latest
           cache-to: type=gha,mode=max
           build-args: |
             BUILDKIT_INLINE_CACHE=1
@@ -158,7 +179,7 @@ jobs:
             echo "🔐 Logging into Docker registry..."
             docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
 
-            echo "📦 Pulling latest image..."
+            echo "📦 Pulling latest images..."
             docker pull ${{ secrets.REGISTRY_USERNAME }}/${{ secrets.IMAGE }}
 
             echo "🔄 Restarting containers..."

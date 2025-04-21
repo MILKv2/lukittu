@@ -1,4 +1,4 @@
-import { License } from '../../generated/client';
+import { License } from '../../prisma/generated/client';
 import { getLicenseStatus } from './license-status';
 
 const createBaseLicense = (
