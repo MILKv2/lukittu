@@ -55,17 +55,16 @@ export default Command({
         return;
       }
 
-      const isInTeam = Boolean(discordAccount.user.teams.length);
+      // Check if the user is a member of the specified team
+      const team = discordAccount.user.teams.find((team) => team.id === teamId);
 
-      if (!isInTeam) {
+      if (!team) {
         await interaction.editReply({
           content:
             'You are not a member of this team or the team does not exist.',
         });
         return;
       }
-
-      const team = discordAccount.user.teams[0];
 
       await prisma.discordAccount.update({
         where: {
