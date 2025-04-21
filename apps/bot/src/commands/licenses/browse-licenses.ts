@@ -526,11 +526,11 @@ export default Command({
 
       const totalLicenses = await prisma.license.count({
         where: {
-          teamId,
           ...statusFilter,
           ...(licenseKeyLookup ? { licenseKeyLookup } : {}),
           ...(productId ? { products: { some: { id: productId } } } : {}),
           ...(customerId ? { customers: { some: { id: customerId } } } : {}),
+          teamId,
         },
       });
       const totalPages = Math.max(totalLicenses, 1);
@@ -540,11 +540,11 @@ export default Command({
 
       const licenses = await prisma.license.findMany({
         where: {
-          teamId,
           ...statusFilter,
           ...(licenseKeyLookup ? { licenseKeyLookup } : {}),
           ...(productId ? { products: { some: { id: productId } } } : {}),
           ...(customerId ? { customers: { some: { id: customerId } } } : {}),
+          teamId,
         },
         skip,
         take: PAGE_SIZE,
@@ -625,13 +625,13 @@ export default Command({
 
           const newPageLicenses = await prisma.license.findMany({
             where: {
-              teamId,
               ...statusFilter,
               ...(licenseKeyLookup ? { licenseKeyLookup } : {}),
               ...(productId ? { products: { some: { id: productId } } } : {}),
               ...(customerId
                 ? { customers: { some: { id: customerId } } }
                 : {}),
+              teamId,
             },
             skip,
             take: PAGE_SIZE,

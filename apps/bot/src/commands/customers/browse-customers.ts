@@ -289,7 +289,6 @@ export default Command({
 
       const totalCustomers = await prisma.customer.count({
         where: {
-          teamId,
           ...(search
             ? {
                 OR: [
@@ -301,6 +300,7 @@ export default Command({
           ...(licenseKeyLookup
             ? { licenses: { some: { licenseKeyLookup } } }
             : {}),
+          teamId,
         },
       });
       const totalPages = Math.max(totalCustomers, 1);
@@ -310,7 +310,6 @@ export default Command({
 
       const customers = await prisma.customer.findMany({
         where: {
-          teamId,
           ...(search
             ? {
                 OR: [
@@ -322,6 +321,7 @@ export default Command({
           ...(licenseKeyLookup
             ? { licenses: { some: { licenseKeyLookup } } }
             : {}),
+          teamId,
         },
         skip,
         take: PAGE_SIZE,
@@ -409,7 +409,6 @@ export default Command({
 
           const newPageCustomers = await prisma.customer.findMany({
             where: {
-              teamId,
               ...(search
                 ? {
                     OR: [
@@ -421,6 +420,7 @@ export default Command({
               ...(licenseKeyLookup
                 ? { licenses: { some: { licenseKeyLookup } } }
                 : {}),
+              teamId,
             },
             skip,
             take: PAGE_SIZE,
