@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const LOGS_ENABLED = process.env.LOGS_ENABLED ?? true;
 
 const getFormattedDate = () => {

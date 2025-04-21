@@ -73,6 +73,12 @@ jobs:
       - name: Lint web application
         run: pnpm run --filter lukittu-web lint
 
+      - name: Lint bot application
+        run: pnpm run --filter lukittu-bot lint
+
+      - name: Lint shared application
+        run: pnpm run --filter @lukittu/shared lint
+
       - name: Run tests for web application
         run: pnpm run --filter lukittu-web test
 
