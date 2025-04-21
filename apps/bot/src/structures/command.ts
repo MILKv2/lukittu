@@ -1,9 +1,20 @@
+import { DiscordAccount, Limits, Team, User } from '@lukittu/shared';
 import {
   AutocompleteInteraction,
   ChatInputCommandInteraction,
   RESTPostAPIChatInputApplicationCommandsJSONBody,
 } from 'discord.js';
-import { LinkedDiscordAccount } from '..';
+
+export type LinkedDiscordAccount = DiscordAccount & {
+  user: Omit<User, 'passwordHash'> & {
+    teams: Team[];
+  };
+  selectedTeam:
+    | (Team & {
+        limits: Limits | null;
+      })
+    | null;
+};
 
 export interface Command {
   data: RESTPostAPIChatInputApplicationCommandsJSONBody & {
