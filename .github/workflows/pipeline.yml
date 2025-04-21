@@ -30,9 +30,8 @@ jobs:
       - name: Run translation key check
         run: node apps/web/src/locales/checkTranslations.js
 
-  verify:
-    name: Lint and Test
-    timeout-minutes: 8
+  setup:
+    name: Setup Environment
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -67,32 +66,117 @@ jobs:
 
       - name: Generate database client and build shared
         run: |
-          pnpm run db:generate
           pnpm run build:shared
 
-      - name: Lint applications
-        run: |
-          pnpm run --filter lukittu-web lint
-          pnpm run --filter lukittu-bot lint
-          pnpm run --filter @lukittu/shared lint
+  lint-web:
+    name: Lint Web App
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 'latest'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 'latest'
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Lint web application
+        run: pnpm run --filter lukittu-web lint
 
-      - name: Run tests
-        run: |
-          pnpm run --filter lukittu-web test
-          pnpm run --filter @lukittu/shared test
+  lint-bot:
+    name: Lint Bot App
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 'latest'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 'latest'
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Lint bot application
+        run: pnpm run --filter lukittu-bot lint
 
+  lint-shared:
+    name: Lint Shared Package
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 'latest'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 'latest'
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Generate database client and build shared
+        run: pnpm run build:shared
+      - name: Lint shared package
+        run: pnpm run --filter @lukittu/shared lint
+
+  test-web:
+    name: Test Web App
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 'latest'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 'latest'
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Run web tests
+        run: pnpm run --filter lukittu-web test
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: test-results
-          path: |
-            apps/web/coverage/
-            packages/shared/coverage/
+          name: web-test-results
+          path: apps/web/coverage/
           retention-days: 7
 
-  build:
-    needs: [check-translation, verify]
-    name: Build Docker Images
+  test-shared:
+    name: Test Shared Package
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 'latest'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 'latest'
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Generate database client and build shared
+        run: pnpm run build:shared
+      - name: Run shared package tests
+        run: pnpm run --filter @lukittu/shared test
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: shared-test-results
+          path: packages/shared/coverage/
+          retention-days: 7
+
+  build-web:
+    needs: [check-translation, lint-web, test-web]
+    name: Build Web Docker Image
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
@@ -138,6 +222,25 @@ jobs:
           platforms: linux/amd64
           provenance: false
 
+  build-bot:
+    needs: [check-translation, lint-bot, lint-shared, test-shared]
+    name: Build Bot Docker Image
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+        with:
+          buildkitd-flags: --debug
+
+      - name: Login to Docker Registry
+        if: github.ref == 'refs/heads/main'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
       - name: Build and push bot docker image
         uses: docker/build-push-action@v6
         with:
@@ -155,7 +258,7 @@ jobs:
           provenance: false
 
   deploy:
-    needs: build
+    needs: [build-web, build-bot]
     name: Deploy to VM
     timeout-minutes: 5
     runs-on: ubuntu-latest
