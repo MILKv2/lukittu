@@ -29,7 +29,6 @@ jobs:
 
       - name: Run translation key check
         run: node apps/web/src/locales/checkTranslations.js
-        working-directory: .
 
   verify:
     name: Lint and Test
@@ -41,10 +40,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 'latest'
+          cache: 'pnpm'
 
       - uses: pnpm/action-setup@v2
         with:
           version: 'latest'
+          run_install: false
 
       - name: Get pnpm store directory
         id: pnpm-cache
@@ -57,33 +58,28 @@ jobs:
             ${{ steps.pnpm-cache.outputs.STORE_PATH }}
             apps/web/.next/cache
             node_modules/.cache
-          key: ${{ runner.os }}-nextjs-pnpm-${{ hashFiles('**/pnpm-lock.yaml', '**/package.json') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
-            ${{ runner.os }}-nextjs-pnpm-
-            ${{ runner.os }}-
+            ${{ runner.os }}-pnpm-
 
-      - run: pnpm install --frozen-lockfile
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
-      - name: Generate database client
-        run: pnpm run db:generate
+      - name: Generate database client and build shared
+        run: |
+          pnpm run db:generate
+          pnpm run build:shared
 
-      - name: Build shared package
-        run: pnpm run build:shared
+      - name: Lint applications
+        run: |
+          pnpm run --filter lukittu-web lint
+          pnpm run --filter lukittu-bot lint
+          pnpm run --filter @lukittu/shared lint
 
-      - name: Lint web application
-        run: pnpm run --filter lukittu-web lint
-
-      - name: Lint bot application
-        run: pnpm run --filter lukittu-bot lint
-
-      - name: Lint shared application
-        run: pnpm run --filter @lukittu/shared lint
-
-      - name: Run tests for web application
-        run: pnpm run --filter lukittu-web test
-
-      - name: Run tests for shared package
-        run: pnpm run --filter @lukittu/shared test
+      - name: Run tests
+        run: |
+          pnpm run --filter lukittu-web test
+          pnpm run --filter @lukittu/shared test
 
       - uses: actions/upload-artifact@v4
         if: always()
@@ -99,7 +95,6 @@ jobs:
     name: Build Docker Images
     timeout-minutes: 15
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
 
@@ -121,6 +116,7 @@ jobs:
           EOF
 
       - name: Login to Docker Registry
+        if: github.ref == 'refs/heads/main'
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.REGISTRY_USERNAME }}
@@ -131,7 +127,7 @@ jobs:
         with:
           context: .
           file: ./apps/web/Dockerfile
-          push: true
+          push: ${{ github.ref == 'refs/heads/main' }}
           tags: ${{ secrets.REGISTRY_USERNAME }}/${{ secrets.IMAGE }}:latest
           cache-from: |
             type=gha
@@ -147,7 +143,7 @@ jobs:
         with:
           context: .
           file: ./packages/bot/Dockerfile
-          push: true
+          push: ${{ github.ref == 'refs/heads/main' }}
           tags: ${{ secrets.REGISTRY_USERNAME }}/${{ secrets.IMAGE_BOT }}:latest
           cache-from: |
             type=gha
