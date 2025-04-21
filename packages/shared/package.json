@@ -1,7 +1,7 @@
 {
   "name": "@lukittu/shared",
   "version": "1.0.0",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "scripts": {
     "generate": "prisma generate",
     "migrate": "prisma migrate dev",
