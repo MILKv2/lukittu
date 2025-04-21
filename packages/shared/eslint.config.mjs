@@ -5,8 +5,8 @@ import tseslint from 'typescript-eslint';
 export default tseslint.config({
   files: ['**/*.ts'],
   ignores: [
-    'prisma/**',
-    'dist/**',
+    '**/prisma/*',
+    '**/dist/*',
     '**/*.spec.ts',
     '**/*.test.ts',
   ],
